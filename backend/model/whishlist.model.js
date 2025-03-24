@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const WishlistSchema = new mongoose.Schema({
     whishlist_id: { type: Number, required: true, unique: true },
@@ -7,5 +7,4 @@ const WishlistSchema = new mongoose.Schema({
     create_at: { type: Date, default: Date.now },
 });
 
-const Wishlist = mongoose.model('Wishlist', WishlistSchema);
-export default Wishlist;
+module.exports = mongoose.model('Admin', WishlistSchema);

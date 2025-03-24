@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
     order_id: { type: Number, required: true, unique: true },
@@ -11,6 +11,4 @@ const OrderSchema = new mongoose.Schema({
     location: { type: String }
 });
 
-const Order = mongoose.model('Order', OrderSchema);
-
-export default Order;
+module.exports = mongoose.model('Order', OrderSchema);

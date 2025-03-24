@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const Admin = require('./admin.model');
 const User = require('./user.model');
@@ -12,7 +12,7 @@ const OrderDetail = require('./orderDetail.model');
 const Wishlist = require('./wishlist.model');
 const Review = require('./review.model');
 
-exports = {
+module.exports = {
     Admin,
     User,
     Product,
