@@ -1,0 +1,35 @@
+.product-page {
+    display: flex;
+    background-color: #F5F5F5;
+  }
+  
+  .filter-section {
+    width: 25%;
+    padding: 4px;
+    margin: 0px;
+  }
+  
+  .products-header-container{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+.products-header{
+   margin: 0px;
+   width: 24%;
+   padding: 10px 0px 10px 10px;
+   height: 25px;
+   align-content: center;
+   border-radius: 10px 0px 0px 0px;
+   background-color: #EAC427;
+   font-size: 16px;
+   font-weight: bold;
+   color: white;
+}
+.products-filter-top{
+    background-color: #E9E9E9;
+    height: 25px;
+    padding: 10px 0px 10px 10px;
+    align-content: center;
+    flex: 1;
+}

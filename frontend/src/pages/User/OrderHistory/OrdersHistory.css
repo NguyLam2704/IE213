@@ -1,0 +1,33 @@
+.orders-history {
+    width: 100%;
+  }
+  
+  .orders-history h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: #333;
+  }
+  
+  .orders-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .order-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .order-header {
+    font-weight: bold;
+    border-bottom: 2px solid #EAC427;
+  }
+  
+  .order-row span {
+    flex: 1;
+    text-align: center;
+  }
+  

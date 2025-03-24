@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faUser, faCaretDown, faSearch, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
 import "./Header.css"; 
 import { useNavigate } from "react-router-dom";
 
@@ -25,18 +25,23 @@ export default function Header({ isAuthenticated, setIsAuthenticated }) {
       </div>
 
       {/* Navigation */}
-      <div className="nav-dropdown">
+      <div 
+        className="nav-dropdown"
+        onMouseEnter={() => setProductDropdown(true)}
+        onMouseLeave={() => setProductDropdown(false)}
+      >
         <button
           className="dropdown-btn"
-          onClick={() => setProductDropdown(!productDropdown)}
+          onClick={() => navigate("/products")}
         >
-            SẢN PHẨM <FontAwesomeIcon icon={productDropdown ? faCaretUp : faCaretDown} className="icon" />        </button>
+            SẢN PHẨM         
+        </button>
         {productDropdown && (
           <div className="dropdown-menu">
             {["VỢT CẦU LÔNG", "LƯỚI CẦU LÔNG", "GIÀY CẦU LÔNG", "QUẤN CÁN", "TÚI CẦU LÔNG"].map((item) => (
               <Link
                 key={item}
-                to={`/san-pham/${item.toLowerCase().replace(/ /g, "-")}`}
+                to={`/products/${item.toLowerCase().replace(/ /g, "-")}`}
                 className="dropdown-item"
               >
                 {item}

@@ -5,17 +5,26 @@ import { useEffect, useState } from "react";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
-      localStorage.getItem("isAuthenticated") === "true"
+      localStorage.getItem("isAuthenticated") === "false"
     );
     
     return (
         <div className="App font-body">
             <Router>
-                <Routes>
-                    {pages.map((Page, index) => (
-                        <Route key={index} path={Page.path} element={<Page.Component isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>} />
-                    ))}
-                </Routes>
+            <Routes>
+            {pages.map(({ path, Component, children }, index) => (
+                <Route 
+                key={index} 
+                path={path} 
+                element={<Component isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+                >
+                {/* children  */}
+                {children && children.map(({ path: childPath, Component: ChildComponent }, childIndex) => (
+                    <Route key={childIndex} path={childPath} element={<ChildComponent />} />
+                ))}
+                </Route>
+            ))}
+            </Routes>
             </Router>
         </div>
     );

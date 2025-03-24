@@ -12,7 +12,7 @@ export default function Login({ setIsAuthenticated }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (email === "abc@gmail" && password === "123") {
+    if (email === "" && password === "") {
       setIsAuthenticated(true);
       localStorage.setItem("isAuthenticated", "true"); // Lưu trạng thái đăng nhập
       navigate("/");
@@ -33,14 +33,14 @@ export default function Login({ setIsAuthenticated }) {
                     placeholder="Nhập email của bạn"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
+                    // required
                 />
                 <input
                     type="password"
                     placeholder="Nhập mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
+                    //required
                 />
                 <button type="submit" className="login-btn">Đăng Nhập</button>
             </form>
