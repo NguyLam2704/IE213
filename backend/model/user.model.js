@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
     user_id: { type: Number, required: true, unique: true },
@@ -11,4 +11,5 @@ const UserSchema = new mongoose.Schema({
     update_at: { type: Date }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+export default User;
