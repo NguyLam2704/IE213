@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+import { generateToken, generateRefreshToken } from "../middleware/jwt.js";
 
 // Đăng ký
 export const register = async (req, res) => {
@@ -8,7 +9,10 @@ export const register = async (req, res) => {
 
         // Kiểm tra thiếu dữ liệu
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "Missing required fields" });
+            return res.status(400).json({ 
+                sussess: false,
+                message: "Missing required fields" 
+            });
         }
 
         // Kiểm tra email đã tồn tại
@@ -18,8 +22,8 @@ export const register = async (req, res) => {
         }
 
         // Tạo user_id tự động
-        const lastUser = await User.findOne().sort({ user_id: -1 });
-        const newUserId = lastUser ? lastUser.user_id + 1 : 1;
+        const lastUser = await User.findOne().sort({ user_id: -1 }); // tìm id_user cuối cùng
+        const newUserId = lastUser ? lastUser.user_id + 1 : 1; // nếu không có user nào thì bắt đầu từ 1
 
         // Tạo user mới
         const newUser = new User({ 
@@ -53,11 +57,26 @@ export const login = async (req, res) => {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Tạo token JWT
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        // Tạo token JWT để lưu trong cookie
+        const token = generateToken({ _id: user._id, email: user.email });
 
-        res.status(200).json({ token, user: { id: user._id, name: user.name, email: user.email } });
+        // Lưu refresh token vào cơ sở dữ liệu
+        const refreshToken =generateRefreshToken({ _id: user._id, email: user.email });
+        
+        // Lưu refresh token vào database
+        await User.findByIdAndUpdate(user._id, {refreshToken} ,{new:true})
+
+        res.cookie('refreshtoken',refreshToken, {httpOnly: true, maxAge: 7*24*3600*1000})
+
+        res.status(200).json({ 
+            sussces: true,
+            token,
+            user: { id: user.user_id, name: user.name, email: user.email } 
+        });
     } catch (error) {
+        console.error(error);
+
         res.status(500).json({ message: "Error logging in", error });
     }
+    
 };

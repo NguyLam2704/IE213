@@ -8,6 +8,8 @@ import Authrouter from "./routes/auth.route.js";
 import session from 'express-session';
 import passport from "./config/passport.js";
 import productRoutes from "./routes/product.route.js"; // Đảm bảo đường dẫn đúng
+import cookieParser from "cookie-parser"; // đọc cookie từ request
+
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
@@ -31,11 +33,14 @@ app.use(passport.session());
 // Middleware
 app.use(express.json()); // Quan trọng để đọc dữ liệu JSON từ request
 app.use(cors());
+
 // Routes
+
 app.use("/api/v1/users", userRoutes);
 
 app.use('/api/auth', Authrouter);
 
+app.use(cookieParser()); // Để đọc cookie từ request
 // Route đăng nhập Google
 app.get('/api/auth/google', 
     passport.authenticate("google", { scope: ["openid", "profile", "email"] })
@@ -52,11 +57,6 @@ app.get('/api/auth/google/callback',
 
 
 app.use("/api/v1/products", productRoutes);
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
 
 
 app.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));

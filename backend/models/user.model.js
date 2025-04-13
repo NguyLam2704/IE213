@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
     phone_number: { type: String },
     status: { type: String },
     create_at: { type: Date, default: Date.now },
-    update_at: { type: Date }
+    update_at: { type: Date },
+    refresh_token: { type: String },
 });
 
 // Băm mật khẩu trước khi lưu

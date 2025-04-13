@@ -1,7 +1,7 @@
 import express from "express";
 import { register, login } from "../controllers/Auth.js";
 import { getProfile, fetchOneUser, fetchAllUsers, updateUsers, createUsers } from "../controllers/user.controller.js";
-import authMiddleware from "../middleware/auth.js";
+import authMiddleware from "../middleware/auth_token.js";
 
 const userRouter = express.Router();
 
@@ -12,7 +12,7 @@ userRouter.post("/register", register);
 userRouter.post("/login", login);
 
 // Lấy thông tin user
-userRouter.get("/profile", getProfile);
+userRouter.get("/profile", authMiddleware, getProfile);
 // or
 userRouter.get("/:id", fetchOneUser)
 

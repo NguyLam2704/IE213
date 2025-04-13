@@ -9,6 +9,7 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded JWT:", decoded); // Xem có _id đúng không
         req.user = decoded;
         next();
     } catch (error) {
