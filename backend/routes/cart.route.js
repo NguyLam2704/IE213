@@ -1,7 +1,7 @@
 import express from "express";
 
 import {authMiddleware} from "../middleware/auth.js";
-import { addCart, deleteCart } from "../controllers/cart.controller.js";
+import { addCart, deleteCart, getCart } from "../controllers/cart.controller.js";
 
 const cartRouter = express.Router();
 
@@ -16,5 +16,8 @@ cartRouter.patch("/", addCart);
 
 // Xóa sản phẩm trong giỏ hàng
 cartRouter.delete("/", deleteCart);
+
+// Lấy tất sản phẩm trong giỏ hàng
+cartRouter.get("/", getCart);
 
 export default cartRouter;

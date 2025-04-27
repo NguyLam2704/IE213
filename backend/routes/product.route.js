@@ -9,7 +9,6 @@ productRouter.get("/:id", fetchProductById);
 // Lấy danh sách tất cả sản phẩm
 productRouter.get("/", fetchAllProducts);
 
-
 // Thêm sản phẩm
 productRouter.post("/", createProduct)
 export default productRouter;

@@ -8,3 +8,6 @@ export const apiUpdateItem = (data) => {
     return api.patch('api/v1/cart/', data);
 }
 
+export const apiGetItem = () => {
+    return api.get('api/v1/cart/');
+}

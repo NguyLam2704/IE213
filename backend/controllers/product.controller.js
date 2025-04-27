@@ -4,18 +4,18 @@ import Brand from '../models/brand.model.js';
 import ProductImage from '../models/productImage.model.js';
 import Type from '../models/type.model.js'
 import mongoose from 'mongoose';
+
 export const fetchProductById = async (req, res) => {
-    const productId = parseInt(req.params.id);
+    const productId = req.params.id; // lấy từ URL parameter
     try {
-        const product = await Product
-            .findOne({ prod_id: productId })
+        const product = await Product.findOne({ _id: productId })
             .populate('category_id')
             .populate('brand_id')
             .populate('type_id')
             .populate({
                 path:'images',
                 select: 'image is_primary_image -prod_id',
-                // match: {is_primary_image: true}
+
             })
 
         if(!product) {
@@ -29,7 +29,6 @@ export const fetchProductById = async (req, res) => {
 }
 
 export const fetchAllProducts = async (req, res) => {
-
     // Price Filter 
     const minPrice = parseInt(req.query.minPrice) || 0
     const maxPrice = parseInt(req.query.maxPrice) || Number.MAX_VALUE
@@ -44,7 +43,6 @@ export const fetchAllProducts = async (req, res) => {
     const brandFilter = (brand) ? {brand_id: brand} : {}
     // Combine filters
     const query = { ...priceFilter, ...categoryFilter, ...brandFilter};
-    console.log(query)
     // Pagination 
     const totalDocument = await Product.countDocuments(query);   //Tính tổng số sản phẩm
     const page = parseInt(req.query.page) || 1;

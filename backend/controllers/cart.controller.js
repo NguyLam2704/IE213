@@ -105,3 +105,18 @@ export const deleteCart = async (req, res) => {
         res.status(500).json({success: false, message: "Server Error"});
     }
 }
+
+//lấy hết sản phẩm trong giỏ hàng
+export const getCart = async (req, res) => {
+    //Lấy userid từ token
+    const user_id = req.user._id;
+
+    try {
+        const user = await User.findById(user_id);
+        const cartItem = user.cart;
+        res.status(201).json({success: true, items: cartItem});
+    } catch (e) {
+        console.error("Error in delete product:", e.message);
+        res.status(500).json({success: false, message: "Server Error"});
+    }
+}
