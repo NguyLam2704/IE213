@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema({
+    order_id: { type: Number, required: true, unique: true },
     products: [{
         product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         count: {type: Number, default: 1},

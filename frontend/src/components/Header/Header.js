@@ -5,14 +5,47 @@ import { faCartShopping, faUser, faSearch } from '@fortawesome/free-solid-svg-ic
 import "./Header.css"; 
 import { useNavigate } from "react-router-dom";
 import { selectTotalQuantity } from '../../../src/app/store/selectors.js';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchTerm, clearSearchTerm } from "../../features/search/searchSlice";
+import { useGetProductsQuery } from "../../features/product/productApi";
+// import logo from "../../assets/Logo2-long.png"
 
 export default function Header({ isAuthenticated, setIsAuthenticated }) {
   const totalQuantity = useSelector(selectTotalQuantity);
+
+  // SEARCH BAR
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data: allProducts = [] } = useGetProductsQuery(); // lấy tất cả sản phẩm
+  const searchTerm = useSelector((state) => state.search.searchTerm);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleInputChange = (e) => {
+    dispatch(setSearchTerm(e.target.value));
+    setShowDropdown(true);
+  };
+
+  const handleSelectProduct = (productId) => {
+    dispatch(clearSearchTerm());
+    navigate(`/product/${productId}`);
+    setShowDropdown(false);
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      setShowDropdown(false);
+      navigate(`/products?search=${searchTerm}`);
+    }
+  };
+   // Lọc sản phẩm theo tên
+  const filteredProducts = allProducts.filter((p) =>
+    p.prod_name.toLowerCase().includes(searchTerm.toLowerCase())
+  ).slice(0, 5); // giới hạn 5 kết quả
+
   const [productDropdown, setProductDropdown] = useState(false);
   const [userDropdown, setUserDropdown] = useState(false);
-  const navigate = useNavigate();
 
+  // LOGOUT
   const handleLogout = () => {
     setIsAuthenticated(false);
     navigate("/");
@@ -24,17 +57,18 @@ export default function Header({ isAuthenticated, setIsAuthenticated }) {
       {/* Logo + Home */}
       <div className="header-left">
         <Link to="/" className="logo">Smash Shop</Link>
+        {/* <Link to="/" className="logo-img"><img src={logo}/></Link> */}
         <Link to="/" className="nav-link">TRANG CHỦ</Link>
       </div>
 
       {/* Navigation */}
       <div 
-        className="nav-dropdown"
+        className="nav-dropdown "
         onMouseEnter={() => setProductDropdown(true)}
         onMouseLeave={() => setProductDropdown(false)}
       >
         <button
-          className="dropdown-btn"
+          className="dropdown-btn nav-link"
           onClick={() => navigate("/products")}
         >
             SẢN PHẨM         
@@ -54,12 +88,39 @@ export default function Header({ isAuthenticated, setIsAuthenticated }) {
         )}
       </div>
 
-      <Link to="/" className="nav-link">BÀI VIẾT</Link>
+      {/* <Link to="/" className="nav-link">BÀI VIẾT</Link> */}
       
       {/* Search Bar */}
       <div className="search-bar">
-        <input type="text" placeholder="Bạn đang tìm gì?" className="search-bar-input" />
-        <FontAwesomeIcon icon={faSearch} className="search-icon" />
+        <input 
+          type="text" 
+          placeholder="Bạn đang tìm gì?" 
+          className="search-bar-input" 
+          value={searchTerm}
+          onChange={handleInputChange}
+          onKeyDown={handleEnter}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // delay để click chọn không bị mất dropdown
+          onFocus={() => searchTerm && setShowDropdown(true)}
+        />
+        <FontAwesomeIcon icon={faSearch} className="search-icon"  onClick={() => handleEnter({ key: "Enter" })}/>
+        {showDropdown && searchTerm && (
+          <div className="search-dropdown">
+            {filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className="dropdown-item"
+                onClick={() => handleSelectProduct(product._id)}
+              >
+                <img
+                  src={`${product.images.filter((img) => img.is_primary_image)[0]?.image}`}
+                  alt={product.prod_name}
+                  className="search-product-image"
+                />
+                <span className="search-product-name">{product.prod_name}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
 

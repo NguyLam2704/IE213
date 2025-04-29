@@ -3,16 +3,19 @@
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+ 
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
 .breadcrumb {
-  background: #f3c200;
+  margin-top: 20px;
+  background-color: #EAC427;
+  border-radius: 10px 10px 0px 0px;
   color: white;
   padding: 10px 15px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -50,14 +53,15 @@
 .quantity {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 10px 0;
+  margin: 10px 0px;
+  align-content: center;
+  
 }
 
 .qty-btn {
-  padding: 5px 10px;
-  background: #f3c200;
-  border: none;
+  padding: 10.1px 13px;
+  background-color: white;
+  border: 1px solid rgb(186, 186, 186);
   font-weight: bold;
   cursor: pointer;
   border-radius: 4px;
@@ -86,14 +90,18 @@
   margin-top: 5px;
   height: 42px;
 }
-
-.btn {
+.quantity-label{
+  margin-right: 20px;
+}
+.add-to-cart-btn {
   background: #f3c200;
+  color: white;
   border: none;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  margin-left: 30px;
   border-radius: 5px;
   /* margin-top: 10px; */
   text-align: center;
@@ -113,6 +121,7 @@
   /* Khi nhấn, chìm xuống */
   transform: translateY(2px) scale(0.98);
   box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
+
 }
 
 .note {
@@ -122,13 +131,12 @@
 }
 
 .section-heading {
-  background: #f3c200;
+  background-color: #EAC427;
   color: white;
   padding: 10px 15px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   text-align: center;
-  border-radius: 5px;
   
 }
 
@@ -151,19 +159,21 @@
 .similar-products {
   background-color: #F5F5F5;
   padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* căn giữa các product */
   gap: 20px;
+  min-height: 100px; /* đảm bảo không bị collapse khi không có sản phẩm */
 }
-
 .product-item {
   border: 1px solid #eee;
-  padding: 15px;
+  padding: 5px;
   border-radius: 10px;
   text-align: center;
   transition: 0.3s;
   cursor: pointer;
   background: white;
+  width: 180px;
 }
 
 .product-item:hover {

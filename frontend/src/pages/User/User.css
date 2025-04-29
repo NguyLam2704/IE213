@@ -1,6 +1,5 @@
 /* Tổng thể layout */
 .user-container {
-    height: 100vh;
     margin: 0 15px;
   }
 .user-header-container{
@@ -82,7 +81,7 @@
   }
   
   /* Modal content */
-  .modal {
+  .user-modal {
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -92,7 +91,7 @@
   }
   
   /* Modal buttons */
-  .modal-buttons {
+  .user-modal-buttons {
     margin-top: 15px;
     display: flex;
     justify-content: space-around;

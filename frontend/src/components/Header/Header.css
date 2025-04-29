@@ -21,6 +21,7 @@
     margin-right: 20px;
   }
   
+
   .nav-link {
     text-decoration: none;
     color: gray;
@@ -30,7 +31,7 @@
   .nav-link:hover {
     color: black;
   }
-  
+
   /* Dropdown Sản phẩm */
   .nav-dropdown {
     position: relative;
@@ -98,13 +99,50 @@
   
   .search-icon {
     position: absolute;
+    cursor: pointer;
     right: 4px;
     color: white;
     background-color: #EAC427;
     padding: 5px;
     border-radius: 3px;
   }
+  /* Search dropdown */
+  .search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 999;
+    max-height: 200px;
+    overflow-y: auto;
+  }
   
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .search-product-image {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .search-product-name {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f2f2f2;
+  }
   /* Icons */
   .header-icons {
     display: flex;

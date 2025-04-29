@@ -14,7 +14,7 @@ import orderRoutes from "./routes/order.route.js";
 import brandRoutes from "./routes/brand.route.js"
 import cookieParser from 'cookie-parser';
 import cartRouter from "./routes/cart.route.js";
-
+import dashboardRouter from "./routes/dashboard.route.js";
 
 dotenv.config();
 
@@ -49,7 +49,7 @@ app.use("/api/v1/order",orderRoutes)
 app.use("/api/v1/brand", brandRoutes);
 app.use('/api/auth', Authrouter);
 app.use('/api/v1/cart', cartRouter);
-
+app.use('/api/v1/dashboard', dashboardRouter);
 // Route đăng nhập Google
 app.get('/api/auth/google', 
     passport.authenticate("google", { scope: ["openid", "profile", "email"] })

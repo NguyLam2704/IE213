@@ -12,10 +12,12 @@ const routes = {
 //Admin
     admin: '/admin',
     adminProducts: '/admin/products',
-    adminProduct: '/admin/products/:id',
+    adminProductDetail: '/admin/products/:id',
     adminEditProduct: '/admin/products/:id/edit',
     adminAddProduct: '/admin/products/add',
     adminOrders: '/admin/orders',
+    adminOrderDetail: '/admin/orders/:id',
+
 
 };
 

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 // import { faCake } from "@fortawesome/free-solid-svg-icons";
 import './ProductDetail.css';
 import Header from '../../components/Header/Header';
+import Footer from '../../components/Footer/Footer.js';
 // import products from '../../data/products';
 import { useGetProductsQuery } from "../../features/product/productApi.js";
 import { apiAddItem } from '../../apis/cart.js';
@@ -66,7 +67,6 @@ const ProductDetail = () => {
           <div className="info">
             <h1>{product.prod_name}</h1>
             <div className="price">{product.price.toLocaleString('vi-VN')} ₫</div>
-            <p>Đánh giá: {/* Chưa có dữ liệu */}</p>
 
             <div className="quantity">
               <label>Số lượng: </label>
@@ -98,17 +98,16 @@ const ProductDetail = () => {
               </button>
               
               <button 
-              className="btn"
+              className="add-to-cart-btn"
               onClick={handleAddToCart}
               disabled={loading}
               >
               Thêm vào giỏ
               </button>
+
             </div>
             <p>Số lượng trong kho: {product.stock}</p>
-            <p>Tình trạng: {/* Chưa có dữ liệu */}</p>
             
-            <div className="note">Chia sẻ:</div>
           </div>
         </div>
 
@@ -116,13 +115,10 @@ const ProductDetail = () => {
         <div className="details">
           <ul>
             <li>{product.description || ''}</li>
-            <li>{product.details || ''}</li>
           </ul>
           <ul>
             <li>Thương hiệu: {product.brand_id.brand_name || ''}</li>
             <li>Danh mục: {product.category_id.category_name || ''}</li>
-            <li>Mẫu mã: {/* Chưa có dữ liệu */}</li>
-            <li>Xuất xứ: {/* Chưa có dữ liệu */}</li>
           </ul>
         </div>
 
@@ -140,6 +136,7 @@ const ProductDetail = () => {
             ))}
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

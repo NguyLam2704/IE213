@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './AdminProductForm.css';
+import { useNavigate } from 'react-router-dom';
 
 const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     prod_name: '',
     price: '',
@@ -67,7 +69,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
 
       <label>Danh mục</label>
       <select name="category_id" value={formData.category_id} onChange={handleChange}>
-        {/* fetch list category từ props hoặc API */}
+        {/* fetch list category từ API */}
         <option value="">Chọn danh mục</option>
       </select>
 
@@ -94,7 +96,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
 
       <div className="form-actions">
         <button type="submit">{isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}</button>
-        <button type="button" className="cancel">Hủy</button>
+        <button type="button" className="cancel" onClick={() => navigate("/admin/products")}>Hủy</button>
       </div>
     </form>
   );

@@ -24,7 +24,8 @@ const seedData = async () => {
         await Category.deleteMany();
         await Type.deleteMany();
         await Order.deleteMany();
-        
+        await OrderDetail.deleteMany();
+        await Order.deleteMany();
         // Tạo dữ liệu mới
         const createBrand = await Brand.insertMany([
             { brand_id: 1, brand_name: "Yonex" },
@@ -85,7 +86,7 @@ const seedData = async () => {
         "name": "Nguyễn Lâm",
         "email": "doannguyenlambt1@gmail.com",
         "password": "$2b$10$jt4LcJvS1qoWqfwS5enWiegWIEgM0Knn0IDaboOcYToNO1fh9Bo/C",
-        "_id": "6802248630cc2553afa7a33d",
+        "_id": "680da005a51a507c1556ce00",
         "create_at": "2025-04-18T10:08:06.369Z",
         "__v": 0
         }
@@ -93,21 +94,27 @@ const seedData = async () => {
         const createOrders = await Order.insertMany([
             {
                 order_id: 1,
-                user_id: createUser._id,
-                total_price: 5000000,
-                status: "Completed",
-                datePaid: Date.now(),
+                products: [
+                    { product: createProduct[0]._id, count: 2, color: "red" },
+                    { product: createProduct[3]._id, count: 1, color: "blue" }
+                ],
+                total_price: 9050000, // Calculate total price based on products
                 pay_method: "Credit Card",
-                location: "123 Delivery Address"
+                orderBy: createUser._id,
+                dateCreated: new Date(),
+                status: "Succeeded"
             },
             {
                 order_id: 2,
-                user_id: createUser._id,
-                total_price: 2500000,
-                status: "Pending",
-                datePaid: null,
+                products: [
+                    { product: createProduct[4]._id, count: 1, color: "yellow" },
+                    { product: createProduct[6]._id, count: 3, color: "green" }
+                ],
+                total_price: 10900000, // Calculate total price based on products
                 pay_method: "COD",
-                location: "456 Another Address"
+                orderBy: createUser._id,
+                dateCreated: new Date(),
+                status: "Processing"
             }
         ]);
 
@@ -117,15 +124,15 @@ const seedData = async () => {
                 order_detail_id: 1,
                 order_id: createOrders[0]._id,
                 prod_id: createProduct[0]._id,
-                quantity: 1,
-                price: createProduct[0].price
+                quantity: 2,
+                price: createProduct[0].price * 2
             },
             {
                 order_detail_id: 2,
                 order_id: createOrders[0]._id,
                 prod_id: createProduct[3]._id,
-                quantity: 2,
-                price: createProduct[3].price * 2
+                quantity: 1,
+                price: createProduct[3].price
             },
             {
                 order_detail_id: 3,
@@ -133,6 +140,13 @@ const seedData = async () => {
                 prod_id: createProduct[4]._id,
                 quantity: 1,
                 price: createProduct[4].price
+            },
+            {
+                order_detail_id: 4,
+                order_id: createOrders[1]._id,
+                prod_id: createProduct[6]._id,
+                quantity: 3,
+                price: createProduct[6].price * 3
             }
         ]);
         console.log("Data Imported!");

@@ -18,7 +18,14 @@ export const fetchImagesByProductId = async (req, res) => {
 export const uploadImage = async (req, res) => {
     try {
         const imageUrl = req.file.path; // đường dẫn ảnh trên Cloudinary
-        res.json({ success: true, data: {imageUrl: imageUrl}  });
+        const productImageMaxId = await productImage.findOne({}).sort({prod_image_id: -1})
+        const newProductImage = new productImage({
+            prod_image_id: productImageMaxId.prod_image_id + 1,
+            image: imageUrl,
+            prod_id: req.body.prod_id,
+            is_primary_image: req.body.is_primary_image
+        });
+        res.json({ success: true, data: newProductImage  });
       } catch (error) {
         res.status(500).json({ error: 'Upload failed' });
       }

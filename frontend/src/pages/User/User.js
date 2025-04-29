@@ -1,4 +1,5 @@
 import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faClipboardList, faLock, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
@@ -67,15 +68,16 @@ export default function User({ isAuthenticated, setIsAuthenticated }) {
       {/* Modal xác nhận đăng xuất */}
       {showLogoutModal && (
         <div className="modal-overlay">
-          <div className="modal">
+          <div className="user-modal">
             <p>Bạn có chắc chắn muốn đăng xuất?</p>
-            <div className="modal-buttons">
+            <div className="user-modal-buttons">
               <button className="modal-btn confirm" onClick={handleLogout}>Đăng xuất</button>
               <button className="modal-btn cancel" onClick={() => setShowLogoutModal(false)}>Hủy</button>
             </div>
           </div>
         </div>
       )}
+      <Footer/>
     </>
   );
 }

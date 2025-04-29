@@ -40,42 +40,27 @@
     flex-direction: column;
   }
   
-  .ad-nav-item,
-  .ad-subitem {
+  .ad-nav-item {
     display: flex;
     align-items: center;
     padding: 10px 20px;
     color: #333;
     text-decoration: none;
-    transition: background 0.2s;
     gap: 10px;
   }
   
-  .ad-nav-item:hover,
-  .ad-subitem:hover {
-    background-color: #f1f1f1;
+  .ad-nav-item:hover{
+    background-color: #e4e4e4af;
+    border-radius: 20px;
   }
   
-  .ad-nav-item.active,
-  .ad-subitem.active {
+  .ad-nav-item.active {
     background-color: #EAC427;
     color: white;
+    border-radius: 20px;
   }
+
   
-  .ad-submenu {
-    margin-left: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .ad-nav-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .ad-nav-collapsible {
-    cursor: pointer;
-  }
   
   .ad-main {
     flex: 1;

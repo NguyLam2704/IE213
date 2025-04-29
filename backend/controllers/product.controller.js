@@ -109,7 +109,9 @@ export const createProduct = async(req,res) =>{
     }
 
     const quantity_sold = 0
+    const productMaxId = await Product.findOne({}).sort({prod_id: -1}) // Tìm sản phẩm có id lớn nhất
     const newProduct = new Product({
+        prod_id: productMaxId.prod_id + 1,
         prod_name: prod_name,
         price: price,
         description: description,
@@ -125,16 +127,7 @@ export const createProduct = async(req,res) =>{
         const product = await newProduct.save()
         return res.status(200).json({success: true, data: newProduct})
     } catch(e) {
-
-    }
-    // const newProduct = {
-    //     prod_name: prod_name,
-    //     price: price,
-    //     description: description,
-    //     quantity_sold: 0,
-    //     stock: stock,
-    //     discount: discount || 0 
-    //     category
-    // }
-    
+        console.error("Error in creating product:", e.message);
+        return res.status(500).json({success: false, message: "Server Error"});
+    }    
 }

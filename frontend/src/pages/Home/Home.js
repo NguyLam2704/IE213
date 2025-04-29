@@ -1,9 +1,10 @@
 import './Home.css';
 import Header from '../../components/Header/Header'
+import Footer from "../../components/Footer/Footer";
 import { useNavigate} from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import ProductsList from '../../components/ProductsList/ProductsList';
-import products from '../../data/products';
+// import products from '../../data/products';
 import slide1 from '../../assets/slide1.png';
 import slide2 from '../../assets/slide2.png';
 import slide3 from '../../assets/slide3.png';
@@ -84,7 +85,7 @@ function Home({ isAuthenticated, setIsAuthenticated }){
             />
             </div>
         </div> 
-        
+        <Footer/>
     </>
     );
 }

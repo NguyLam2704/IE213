@@ -1,5 +1,6 @@
 import express from "express";
 import { fetchAllProducts, fetchProductById, createProduct } from "../controllers/product.controller.js";
+import parser from '../utils/multer.js'
 
 const productRouter = express.Router();
 
@@ -10,5 +11,5 @@ productRouter.get("/:id", fetchProductById);
 productRouter.get("/", fetchAllProducts);
 
 // Thêm sản phẩm
-productRouter.post("/", createProduct)
+productRouter.post("/", parser.single('image'), createProduct)
 export default productRouter;

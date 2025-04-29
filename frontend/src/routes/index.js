@@ -14,6 +14,9 @@ import AdminProducts from '../pages/Admin/AdminProducts/AdminProducts';
 import AdminEditProduct from '../pages/Admin/AdminEditProduct';
 import AdminAddProduct from '../pages/Admin/AdminAddProduct';
 import AdminOrders from '../pages/Admin/AdminOrders/AdminOrders';
+import AdminStatistics from '../pages/Admin/AdminStatistics/AdminStatistics';
+import AdminProductDetail from '../pages/Admin/AdminProductDetail/AdminProductDetail';
+import AdminOrderDetail from '../pages/Admin/AdminOrderDetail/AdminOrderDetail';
 import { Navigate } from "react-router-dom";
 
 const pages = [
@@ -39,10 +42,13 @@ const pages = [
         path: routes.admin,
         Component: AdminDashboard,
         children: [
+            { path: '', Component: AdminStatistics },
             { path: 'products', Component: AdminProducts },
             { path: 'products/add', Component: AdminAddProduct },
+            { path: 'products/:id', Component: AdminProductDetail },
             { path: 'products/:id/edit', Component: AdminEditProduct },
             { path: 'orders', Component: AdminOrders },
+            { path: 'orders/:id', Component: AdminOrderDetail },
 
         ],
     },

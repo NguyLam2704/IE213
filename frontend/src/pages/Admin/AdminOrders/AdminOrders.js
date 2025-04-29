@@ -36,6 +36,21 @@ const dummyOrder = {
   id: '68022764aee326341058a6d2'
 };
 
+const statuses = {
+  Completed: 'status-completed',
+  Canceled: 'status-canceled',
+  Processing: 'status-processing'
+};
+
+const dummyOrders = Array.from({ length: 15 }, (_, i) => ({
+  ...dummyOrder,
+  order_id: i + 1,
+  total_price: 1000000 + i * 100000,
+  status: i % 3 === 0 ? 'Completed' : i % 3 === 1 ? 'Canceled' : 'Processing',
+  location: `Address ${i + 1}`
+}));
+
+
 const AdminOrders = () => {
   const navigate = useNavigate();
 
@@ -45,31 +60,36 @@ const AdminOrders = () => {
 
   return (
     <div className="admin-orders">
-      <h2>Đơn hàng</h2>
-      <div className="orders-table-container">
-        {/* <table className="orders-table">
+      <h2>Danh sách đơn hàng</h2>
+      <div className="product-table">
+        <table>
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Tên sản phẩm</th>
-              <th>Mã sản phẩm</th>
-              <th>Email</th>
-              <th>Country</th>
-              <th>Status</th>
+              <th>ID đơn hàng</th>
+              <th>Giá trị đơn</th>
+              <th>Địa chỉ</th>
+              <th>Ngày tạo</th>
+              <th>Trạng thái</th>
             </tr>
           </thead>
           <tbody>
-            <tr onClick={() => handleClick(dummyOrder._id)}>
-              <td>Jane Cooper</td>
-              <td>Microsoft</td>
-              <td>(225) 565-0118</td>
-              <td>jane@microsoft.com</td>
-              <td>United States</td>
-              <td><span className="status delivered">Đã giao</span></td>
-            </tr>
+          {dummyOrders.map(order => (
+              <tr key={order.order_id} onClick={() => navigate(`/admin/orders/${order._id}`)}>
+                <td>{order.order_id}</td>
+                <td>{order.total_price.toLocaleString('vi-VN')}₫</td>
+                <td>{order.location}</td>
+                <td>{new Date(order.dateCreated).toLocaleDateString()}</td>
+                <td>
+                  <span className={`status-label ${statuses[order.status]}`}>
+                    {order.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
           </tbody>
-        </table> */}
+        </table>
       </div>
+
     </div>
   );
 };

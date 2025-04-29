@@ -1,4 +1,6 @@
 import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
+
 import { useState } from "react";
 import "./Order.css";
 
@@ -76,7 +78,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
       </div>
 
       </div>
-      
+      <Footer/>
     </>
   );
 }
