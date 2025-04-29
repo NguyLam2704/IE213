@@ -1,6 +1,4 @@
 import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-import { useState } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import "./Cart.css";
@@ -46,12 +44,12 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
       fetchProducts();
     }
   }, [items]);
-  console.log("detail: ",productDetails);
-  console.log("items: ",items);
+  // console.log("detail: ",productDetails);
+  // console.log("items: ",items);
   
   const cartItemsWithDetails = items.map(item => {
     const product = productDetails[item.product] || {};
-    console.log("product: ",product);
+    // console.log("product: ",product);
     return {
       ...item,
       prod_name: product.prod_name,
@@ -62,7 +60,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
     };
   });
   
-  console.log("cartItemsWithDetails: ",cartItemsWithDetails);
+  // console.log("cartItemsWithDetails: ",cartItemsWithDetails);
   const handleQuantityChange = (id, delta) => {
     dispatch(updateQuantity({ id, delta }));
   };
@@ -76,6 +74,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   
 
   return (
+
     <>
       <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
 
@@ -93,56 +92,42 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
 
         {cartItemsWithDetails.map(item => (
           <div className="cart-item" key={item._id}>
+            
             <div className="product-info">
               <img src={item.image} alt="giay" />
               <span>{item.prod_name}</span>
             </div>
             <div>{item.price} đ</div>
             <div className="quantity-control">
-              <button onClick={() => handleQuantityChange(item._id, -1)}>-</button>
+              <button onClick={() => handleQuantityChange(item.product, -1)}>-</button>
               <span>{item.quantity}</span>
-              <button onClick={() => handleQuantityChange(item._id, 1)}>+</button>
+              <button onClick={() => handleQuantityChange(item.product, 1)}>+</button>
             </div>
             <div>{(item.price * item.quantity).toLocaleString()} đ</div>
-            <button className="delete-button" onClick={() => handleRemove(item._id)}>Xóa</button>
+            <button className="delete-button" onClick={() => handleRemove(item.product)}>Xóa</button>
           </div>
-          <div className="cart-table">
-            <div className="cart-header">
-              <span>Sản phẩm</span>
-              <span>Đơn giá</span>
-              <span>Số lượng</span>
-              <span>Thành tiền</span>
-            </div>
+        ))}
 
-            {cart.map(item => (
-              <div className="cart-item" key={item.id}>
-                <div className="product-info">
-                  <img src="https://product.hstatic.net/1000362402/product/z5903154352772_e316f4d35fb8aa9733840ff39c83230a_f06b599ce01b4de191960375a79cd7b9_master.jpg" alt="giay" />
-                  <span>{item.name}</span>
-                </div>
-                <div>{item.price.toLocaleString()} đ</div>
-                <div className="quantity-control">
-                  <button onClick={() => handleQuantityChange(item.id, -1)}>-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => handleQuantityChange(item.id, 1)}>+</button>
-                </div>
-                <div>{(item.price * item.quantity).toLocaleString()} đ</div>
-                <button className="delete-button" onClick={() => handleRemove(item.id)}>Xóa</button>
-              </div>
-            ))}
-            <div className="total-price">
-              Tổng tiền: <strong>{totalPrice.toLocaleString()} đ</strong>
-            </div>
-          </div>
-        </div>   
-             
+        <div className="total-price">
+          Tổng tiền: <strong>{totalPrice.toLocaleString()} đ</strong>
+        </div>
+      </div>
+
+      <div className="bottom-section">
+        <div className="discount-box">
+          <label>Mã giảm giá</label>
+          <input type="text" placeholder="Nhập mã giảm giá" />
+          <button>ÁP DỤNG</button>
+        </div>
         <div className="summary-box">
           <p><strong>Số lượng:</strong> {totalQuantity}</p>
           <p><strong>Thành tiền:</strong> {totalPrice.toLocaleString()} đ</p>
           <button className="checkout-button"  onClick={() => navigate('/order')}>THANH TOÁN</button>
         </div>
       </div>
-      <Footer/>
+
+      </div>
+      
     </>
   );
 }
