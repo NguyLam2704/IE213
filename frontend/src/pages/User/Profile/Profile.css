@@ -2,10 +2,14 @@
     display: flex;
     gap: 10px;
     padding: 0px;
+    flex-wrap: wrap;
+    justify-content: center;
+
   }
   
   .profile-info {
     flex: 2;
+    min-width: 300px;
   }
   
   .profile-info h2 {
@@ -57,11 +61,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    min-width: 200px;
   }
   
   .avatar-container {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    position: relative;
   }
   
   .avatar {
@@ -101,4 +108,47 @@
   .save-btn:hover {
     opacity: 0.8;
   }
+  @media (max-width: 921px) {
+    .profile-container {
+      flex-direction: column;
+      align-items: center;
+    }
   
+    .profile-field {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .profile-avatar {
+      order: -1; /* Avatar nhảy lên đầu */
+      margin-bottom: 20px;
+    }
+    .profile-info {
+      width: 100%;
+      padding: 0 20px;
+      align-items: flex-start;
+    }
+  
+    .profile-field label {
+      text-align: left;
+      padding-right: 0;
+      margin-bottom: 5px;
+    }
+  
+    .gender-options {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .profile-actions {
+      justify-content: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+  
+    .edit-btn,
+    .save-btn {
+      width: 200px;
+      text-align: center;
+    }
+  }

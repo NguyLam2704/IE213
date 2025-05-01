@@ -3,124 +3,91 @@
   import "./Products.css";
   import Header from "../../components/Header/Header";
   import Footer from "../../components/Footer/Footer.js";
-  import { useState, useEffect, use } from "react";
+  import { useState, useEffect, useMemo } from "react";
   import { useParams, useNavigate, useSearchParams  } from "react-router-dom";
-  import routes from "../../configs/routes.config";
-  import axios from "axios";
-  import { useDispatch, useSelector } from "react-redux";
+  import { useSelector, useDispatch } from "react-redux";
+  import { useGetAllProductsQuery, useGetProductsQuery } from "../../features/product/productApi.js";
+  import { useGetCategoriesQuery } from "../../features/services/categoryApi.js";
+  import { setSearchTerm } from "../../features/search/searchSlice.js";
 
-  import {fetchAllProducts} from '../../features/product/productSlice.js'
-  import { useGetProductsQuery } from "../../features/product/productApi.js";
   const Products = ({isAuthenticated}) => {
+    const slugify = (text) =>
+      text.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-')
+        .replace(/^-+/, '').replace(/-+$/, '');
+    //DANH MỤC SẢN PHẤM
     const { category } = useParams();
+    const { data: categories } = useGetCategoriesQuery();
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     //TÌM KIẾM
     const [searchParams] = useSearchParams();
     const globalSearchTerm = useSelector((state) => state.search.searchTerm);
-    const searchQuery = searchParams.get("search")?.toLowerCase() || globalSearchTerm.toLowerCase();
+    const searchTerm = useSelector(state => state.search.searchTerm);
+    useEffect(() => {
+      const urlSearch = searchParams.get("search")?.toLowerCase() || "";
+      dispatch(setSearchTerm(urlSearch));
+    }, [searchParams, dispatch]);
 
-    const navigate = useNavigate();
+    //FILTER
+    //GIÁ
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
-    const [sortOption, setSortOption] = useState('Giá');
-    const [filteredProducts, setFilteredProducts] = useState([]);
+    //SORT
+    const [sortOption, setSortOption] = useState('price_asc');
+    //CATEGORY
     const [selectedCategory, setSelectedCategory] = useState('');
-
+    //BRAND
     const [selectedBrands, setSelectedBrands] = useState([]);
+    //TYPE
     const [selectedTypes, setSelectedTypes] = useState([]);
-
+    //PHÂN TRANG
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
-    // const [products, setProducts] = useState([]);
-    // useEffect(() => {
-    //   const fetchProducts = async () => {
-    //     try {
-    //       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/products`);
-    //       setProducts(response.data.data);
-    //       setFilteredProducts(response.data.data);
-    //       console.log('Response Data:', response.data.data);
-    //     } catch (error) { 
-    //       console.error("Error fetching products:", error);
-    //     }
-    //   };
-    //     fetchProducts();},[]);
-    const {data: products = [], isLoading} = useGetProductsQuery({
+    //FETCH PRODUCTS
+    const { data, isLoading } = useGetAllProductsQuery({
+      search: searchTerm,
+      brand: selectedBrands, 
+      type: selectedTypes,
+      category: selectedCategory,
+      minPrice: minPrice ? parseInt(minPrice) : '',
+      maxPrice: maxPrice ? parseInt(maxPrice) : '', 
       page: currentPage,
-      limit: itemsPerPage,
+      limit: 12,
+      sort: sortOption,
     });
-
-    // const products = data || [];  // if (isLoading) return <p>Loading...</p>;
-    // if (error) return <p>Failed to load products</p>;
-    // const products = data
-  //
-    // const dispatch = useDispatch();
-
-    // useEffect(()=>{
-    //     dispatch(fetchAllProducts()); //gọi thunk 
-    // }, [dispatch]);
-
-    // const products = useSelector(state => state.products.items);
-
-    // useEffect(() => {
-    //   setFilteredProducts(products); // cập nhật khi redux cập nhật
-    // }, [products]);
-    const sortProducts = (productsToSort) => {
-      switch (sortOption) {
-        case 'Phổ biến':
-          return [...productsToSort].sort((a, b) => b.quantity_sold - a.quantity_sold);
-        case 'Mới nhất':
-          return [...productsToSort].sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
-        case 'Giá tăng dần':
-          return [...productsToSort].sort((a, b) => a.price - b.price);
-        case 'Giá giảm dần':
-          return [...productsToSort].sort((a, b) => b.price - a.price);
-        case 'Giá mặc định': //không sort
-        default:
-          return productsToSort;
-      }
-    };
-    
-    const applyFilter = () => {
-      if (!products.length) return;
-    // Lọc theo giá
-      let filtered = [...products];
-      if (minPrice || maxPrice) {
-        filtered = filtered.filter(product => {
-          const price = parseFloat(product.price);
-          return (!minPrice || price >= minPrice) && (!maxPrice || price <= maxPrice);
-        });
-      }
-      // Lọc theo brand
-      if (selectedBrands.length > 0) {
-        filtered = filtered.filter(product => selectedBrands.includes(product.brand_id.brand_name));
-      }
-      // Lọc theo type
-      if (selectedTypes.length > 0) {
-        filtered = filtered.filter(product => selectedTypes.includes(product.type_id.type_name));
-      }
-      // Lọc theo category từ URL
-      if (category) {
-        filtered = filtered.filter(product => product.category_id.category_name === category);
-      }
-      //  Lọc theo từ khóa tìm kiếm
-      if (searchQuery) {
-        filtered = filtered.filter(product =>
-          product.prod_name.toLowerCase().includes(searchQuery)
-        );
-      }
-      const sorted = sortProducts(filtered);
-      setFilteredProducts(sorted);
-    };
-    useEffect(() => {
-      applyFilter();
-    }, [minPrice, maxPrice, products, category, sortOption, selectedBrands, selectedTypes, searchQuery]);
-
   
+
+    const categorySlugMap = useMemo(() => {
+      const map = {};
+      categories?.forEach(cat => {
+        map[slugify(cat.category_name)] = cat._id;
+      });
+      return map;
+    }, [categories]);
+
+    const products = data?.data || [];
+    const totalPages = data?.totalPages || 1;
+
+    useEffect(() => {
+      setCurrentPage(1); // Reset về page 1 khi filter thay đổi
+    }, [searchTerm, selectedBrands, minPrice, maxPrice, selectedTypes, category, sortOption]);
+    useEffect(() => {
+      if (data?.data) {
+        setFilteredProducts(data.data);
+      }
+    }, [data]);
+    useEffect(() => {
+      if (category && categorySlugMap[category]) {
+        setSelectedCategory(categorySlugMap[category]);
+      } else {
+        setSelectedCategory('');
+      }
+    }, [category, categorySlugMap]);
     //// SORT - HEADER
-    const handleSortChange = (value) => {
-      setSortOption(value);
-      // dispatch(fetchAllProducts({ sort: sortMap[value] }));
-    };
+    const handleSortChange = (value) => setSortOption(value);
     const toggleBrandFilter = (brand) => {
       setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]);
     };
@@ -128,8 +95,45 @@
     const toggleTypeFilter = (type) => {
       setSelectedTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
     };
-    const allBrands = [...new Set(products.map(p => p.brand_id.brand_name))];
-    const allTypes = [...new Set(products.map(p => p.type_id.type_name))];
+
+    const allBrands = [...new Map(products.map(p => [p.brand_id._id, p.brand_id])).values()];
+    const allTypes = [...new Map(products.map(p => [p.type_id._id, p.type_id])).values()];
+    // const { data: brandsData } = useGetAllBrandsQuery();
+    // const { data: typesData } = useGetAllTypesQuery();
+
+    // const allBrands = brandsData || [];
+    // const allTypes = typesData || [];
+
+    // const { data: productss = [] } = useGetProductsQuery();
+    // const allBrands = useMemo(() => {
+    //     const unique = {};
+    //     return productss.reduce((acc, curr) => {
+    //       const brand = curr.brand_id;
+    //       if (brand && !unique[brand._id]) {
+    //         unique[brand._id] = true;
+    //         acc.push(brand);
+    //       }
+    //       return acc;
+    //     }, []);
+    //   }, [productss]);
+    
+    //   const allTypes= useMemo(() => {
+    //     const unique = {};
+    //     return productss.reduce((acc, curr) => {
+    //       const type = curr.type_id;
+    //       if (type && !unique[type._id]) {
+    //         unique[type._id] = true;
+    //         acc.push(type);
+    //       }
+    //       return acc;
+    //     }, []);
+    //   }, [productss]);
+    const sortOptions = [
+      { label: 'Phổ biến', value: 'best_selling' },
+      { label: 'Mới nhất', value: 'newest' },
+      { label: 'Giá tăng dần', value: 'price_asc' },
+      { label: 'Giá giảm dần', value: 'price_desc' },
+    ];
     return (
       <>
       <Header isAuthenticated={isAuthenticated}/>
@@ -139,22 +143,31 @@
             <p className="products-header"> SẢN PHẨM</p>
             <div className="products-filter-top"> 
               <div className="category-filter">
-                <div className="sort-options">
-                  <label>Sắp xếp theo:</label>
-                  {['Phổ biến', 'Mới nhất'].map((option) => (
-                    <button key={option} className={sortOption === option ? 'active' : ''} onClick={() => handleSortChange(option)}>
-                      {option}
-                    </button>
+              <div className="sort-options">
+                <label>Sắp xếp theo:</label>
+
+                {/* Render các nút cho best_selling và newest */}
+                {sortOptions.slice(0, 2).map((option) => (
+                  <button
+                    key={option.value}
+                    className={sortOption === option.value ? 'active' : ''}
+                    onClick={() => handleSortChange(option.value)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+
+                {/* Render dropdown cho giá */}
+                <select value={sortOption} onChange={(e) => handleSortChange(e.target.value)}>
+                  {sortOptions.slice(2).map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
-                  <select value={sortOption} onChange={(e) => handleSortChange(e.target.value)}>
-                    <option value="Giá mặc định">Giá mặc định</option> {/* <-- mặc định */}
-                    <option value="Giá tăng dần">Giá tăng dần</option>
-                    <option value="Giá giảm dần">Giá giảm dần</option>
-                  </select>
-                </div>
+                </select>
+              </div>
               </div>
             </div>
-
       </div>
       <div className="product-page">
 
@@ -172,24 +185,24 @@
           <div className="brand-type-filter">
             <h3>Thương hiệu</h3>
             {allBrands.map((brand) => (
-              <label key={brand}>
+              <label key={brand._id}>
                 <input
                   type="checkbox"
-                  checked={selectedBrands.includes(brand)}
-                  onChange={() => toggleBrandFilter(brand)}
+                  checked={selectedBrands.includes(brand._id)}
+                  onChange={() => toggleBrandFilter(brand._id)}
                 />
-                {brand}
+                {brand.brand_name}
               </label>
             ))}
             <h3>Loại</h3>
             {allTypes.map((type) => (
-              <label key={type}>
+              <label key={type._id}>
                 <input
                   type="checkbox"
-                  checked={selectedTypes.includes(type)}
-                  onChange={() => toggleTypeFilter(type)}
+                  checked={selectedTypes.includes(type._id)}
+                  onChange={() => toggleTypeFilter(type._id)}
                 />
-                {type}
+                {type.type_name}
               </label>
             ))}
           </div>
@@ -198,8 +211,9 @@
           products={filteredProducts} 
           fullWidth={false} 
           isPaginated={true} 
-          // currentPage={currentPage}
-          // setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
         />
       </div>
       <Footer/>

@@ -59,3 +59,14 @@
     margin-bottom: 1rem;
     color: #333;
   }
+
+  @media (max-width: 768px) {
+    .stat-cards {
+      flex-direction: column;
+    }
+  
+    .stat-card {
+      flex: none;
+      width: 100%;
+    }
+  }

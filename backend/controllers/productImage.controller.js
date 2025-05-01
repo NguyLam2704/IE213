@@ -25,6 +25,7 @@ export const uploadImage = async (req, res) => {
             prod_id: req.body.prod_id,
             is_primary_image: req.body.is_primary_image
         });
+        await newProductImage.save();
         res.json({ success: true, data: newProductImage  });
       } catch (error) {
         res.status(500).json({ error: 'Upload failed' });

@@ -1,29 +1,42 @@
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color:#F9F9F9;
-  }
-  
-  /* Logo + Home */
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .logo {
-    font-size: 35px;
-    font-weight: bold;
-    text-decoration: none;
-    color: black;
-    margin-right: 20px;
-  }
-  
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #F9F9F9;
+  gap: 20px;
+  overflow: visible; /* ❌ Bỏ overflow: hidden đi */
+  flex-wrap: nowrap;
+  min-width: 0;
+  position: relative; /* 🧠 Thêm cái này để các dropdown position tuyệt đối bên trong */
+}
+
+/* Cố định tỷ lệ các khối */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.logo {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  white-space: nowrap; 
+  font-size: clamp(20px, 5vw, 35px); 
+}
+  
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
   .nav-link {
     text-decoration: none;
+    width: 100%;
     color: gray;
     transition: color 0.3s;
   }
@@ -32,12 +45,8 @@
     color: black;
   }
 
-  /* Dropdown Sản phẩm */
-  .nav-dropdown {
-    position: relative;
-  }
-  
-  .dropdown-btn {
+
+ .dropdown-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -47,11 +56,24 @@
     align-items: center;
     gap: 5px;
   }
-  
-  .dropdown-btn:hover {
-    color: black;
-  }
-  
+ 
+
+   /* Nav Links */
+.nav-link, .dropdown-btn {
+  text-decoration: none;
+  color: gray;
+  font-size: 16px;
+  white-space: nowrap; /* Không cho xuống dòng */
+  transition: color 0.3s;
+}
+
+.nav-link:hover, .dropdown-btn:hover {
+  color: black;
+}
+
+.nav-dropdown {
+  position: relative; 
+}
   .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -62,14 +84,21 @@
     width: 200px;
     display: flex;
     flex-direction: column;
-    z-index: 10;
+    z-index: 999;
   }
   
+
   .dropdown-item {
-    padding: 10px;
-    text-decoration: none;
-    color: black;
     transition: background 0.3s;
+    color: black;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    z-index: 999;
   }
   
   .dropdown-item:hover {
@@ -83,9 +112,10 @@
     align-items: center;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 35%;
     background-color: white;
-    padding: 8px; 
+    padding: 8px;
+    flex: 1 1 auto;
+    min-width: 300px; /* Search bar không quá bé */
   }
   
   .search-bar-input {
@@ -97,6 +127,7 @@
     font-size: 14px;
   }
   
+  
   .search-icon {
     position: absolute;
     cursor: pointer;
@@ -106,6 +137,7 @@
     padding: 5px;
     border-radius: 3px;
   }
+
   /* Search dropdown */
   .search-dropdown {
     position: absolute;
@@ -119,14 +151,7 @@
     overflow-y: auto;
   }
   
-  .dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-  }
+
   
   .search-product-image {
     width: 30px;
@@ -148,8 +173,10 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    flex: 0 1 auto; 
+    min-width: 0; /* Bắt icon phải tự thu nhỏ */
+    justify-content: flex-end;
   }
-  
   .icon {
     font-size: 20px;
     color: gray;
@@ -196,7 +223,7 @@
     border-radius: 4px;
     overflow: hidden;
     width: 160px; 
-    z-index: 10;
+    z-index: 10000;
   }
   
   .user-dropdown .dropdown-item {
@@ -220,3 +247,57 @@
     font-size: 16px;
   }
   
+  /* --- MOBILE MENU --- */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .header-center {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    transform: translateY(-200%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 9;
+  }
+
+  .header-center.active {
+    transform: translateY(0);
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .dropdown-menu:not(.user-dropdown) {
+    position: static;
+    width: 100%;
+    margin-top: 10px; /* cách 1 chút cho đẹp */
+    box-shadow: none; /* tuỳ chỉnh nếu muốn bỏ đổ bóng */
+    border: none;
+  }
+}

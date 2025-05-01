@@ -1,9 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useParams  } from 'react-router-dom';
+import { useGetProductsQuery, useCreateProductMutation, useUpdateProductMutation } from '../../../features/product/productApi';
+import { useCreateProductImageMutation } from '../../../features/services/productImageApi';
 import './AdminProductForm.css';
-import { useNavigate } from 'react-router-dom';
 
 const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { data: products = [] } = useGetProductsQuery();
+
+
+  // (SẼ REDUX SAU) Rút các mảng cần thiết từ danh sách sản phẩm 
+  const categories = useMemo(() => {
+    const unique = {};
+    return products.reduce((acc, curr) => {
+      const cat = curr.category_id;
+      if (cat && !unique[cat._id]) {
+        unique[cat._id] = true;
+        acc.push(cat);
+      }
+      return acc;
+    }, []);
+  }, [products]);
+
+  const brands = useMemo(() => {
+    const unique = {};
+    return products.reduce((acc, curr) => {
+      const brand = curr.brand_id;
+      if (brand && !unique[brand._id]) {
+        unique[brand._id] = true;
+        acc.push(brand);
+      }
+      return acc;
+    }, []);
+  }, [products]);
+
+  const types = useMemo(() => {
+    const unique = {};
+    return products.reduce((acc, curr) => {
+      const type = curr.type_id;
+      if (type && !unique[type._id]) {
+        unique[type._id] = true;
+        acc.push(type);
+      }
+      return acc;
+    }, []);
+  }, [products]);
+
   const [formData, setFormData] = useState({
     prod_name: '',
     price: '',
@@ -16,18 +59,24 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
     discount: '',
     images: [],
   });
+
   const [imagePreview, setImagePreview] = useState([]);
 
   useEffect(() => {
     if (isEdit && initialData) {
+      const existingImages = (initialData.images || []).map(img =>
+        typeof img === 'string' ? img : img.image_url
+      );
+  
       setFormData({
         ...initialData,
         category_id: initialData.category_id?._id,
         brand_id: initialData.brand_id?._id,
         type_id: initialData.type_id?._id,
-        images: initialData.images || [],
+        images: [],
       });
-      setImagePreview(initialData.images);
+  
+      setImagePreview(existingImages);
     }
   }, [initialData, isEdit]);
 
@@ -39,15 +88,14 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const preview = files.map((file) => URL.createObjectURL(file));
-    setImagePreview(preview);
+    setImagePreview(preview); // hoặc [...imagePreview, ...preview] nếu muốn giữ ảnh cũ
     setFormData((prev) => ({ ...prev, images: files }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData); // Gửi dữ liệu ra ngoài
   };
-
   return (
     <form className="product-form" onSubmit={handleSubmit}>
       <h2>{isEdit ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}</h2>
@@ -68,19 +116,27 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
       <textarea name="description" value={formData.description} onChange={handleChange} rows="4" />
 
       <label>Danh mục</label>
-      <select name="category_id" value={formData.category_id} onChange={handleChange}>
-        {/* fetch list category từ API */}
+      <select name="category_id" value={formData.category_id} onChange={handleChange} required>
         <option value="">Chọn danh mục</option>
+        {categories.map((category) => (
+          <option key={category._id} value={category._id}>{category.category_name}</option>
+        ))}
       </select>
 
       <label>Thương hiệu</label>
-      <select name="brand_id" value={formData.brand_id} onChange={handleChange}>
+      <select name="brand_id" value={formData.brand_id} onChange={handleChange} required>
         <option value="">Chọn thương hiệu</option>
+        {brands.map((brand) => (
+          <option key={brand._id} value={brand._id}>{brand.brand_name}</option>
+        ))}
       </select>
 
       <label>Loại sản phẩm</label>
-      <select name="type_id" value={formData.type_id} onChange={handleChange}>
+      <select name="type_id" value={formData.type_id} onChange={handleChange} required>
         <option value="">Chọn loại</option>
+        {types.map((type) => (
+          <option key={type._id} value={type._id}>{type.type_name}</option>
+        ))}
       </select>
 
       <label>Giảm giá (%)</label>

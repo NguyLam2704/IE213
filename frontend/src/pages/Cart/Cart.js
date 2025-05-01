@@ -1,5 +1,5 @@
 import Header from "../../components/Header/Header";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";

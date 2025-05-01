@@ -3,12 +3,14 @@
     margin: 0 15px;
   }
 .user-header-container{
+    display: flex;
     margin-top: 20px;
     width: 100%;
     height: 42px;
     background-color: #EAC427;
     border-radius: 10px 10px 0px 0px;
     align-content: center;
+    justify-content: space-between ;
 }
 .user-header{
    font-size: 16px;
@@ -114,3 +116,41 @@
     color: black;
   }
   
+  /* Responsive chỉnh sidebar cho mobile */
+.sidebar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .user-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 60px;
+    left: -260px;
+    width: 250px;
+    height: 100%;
+    background: #F5F5F5;
+    transition: left 0.3s ease;
+    z-index: 999;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .user-content {
+    padding: 15px;
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+}

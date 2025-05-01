@@ -60,4 +60,18 @@
     cursor: pointer;
     border-radius: 6px;
   }
-  
+
+  /* RESPONSIVE */
+@media (max-width: 834px) {
+  .order-container {
+    flex-direction: column; /* Xếp dọc */
+    align-items: center; /* Căn giữa */
+  }
+
+  .order-form, .order-summary {
+    width: 90%; /* Chiếm rộng hơn */
+  }
+  .order-summary{
+    margin-bottom: 20px;
+  }
+}

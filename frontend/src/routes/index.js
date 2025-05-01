@@ -5,6 +5,7 @@ import Register from '../pages/Register/Register';
 import User from '../pages/User/User';
 import Profile from '../pages/User/Profile/Profile';
 import OrdersHistory from '../pages/User/OrderHistory/OrdersHistory';
+import ResetPassword from '../pages/User/ResetPassword/ResetPassword';
 import Products from '../pages/Products/Products';
 import ProductDetail from '../pages/ProductDetail/ProductDetail';
 import Cart from '../pages/Cart/Cart';
@@ -17,6 +18,9 @@ import AdminOrders from '../pages/Admin/AdminOrders/AdminOrders';
 import AdminStatistics from '../pages/Admin/AdminStatistics/AdminStatistics';
 import AdminProductDetail from '../pages/Admin/AdminProductDetail/AdminProductDetail';
 import AdminOrderDetail from '../pages/Admin/AdminOrderDetail/AdminOrderDetail';
+import AdminLogin from '../pages/Admin/AdminLogin/AdminLogin';
+
+
 import { Navigate } from "react-router-dom";
 
 const pages = [
@@ -35,7 +39,7 @@ const pages = [
             { path: "", Component: () => <Navigate to="/user/profile" replace /> }, 
             { path: "profile", Component: Profile },
             { path: "orders", Component: OrdersHistory },
-            // { path: "change-password", Component: ChangePassword },
+            { path: "reset-password", Component: ResetPassword },
         ]
     },
     {
@@ -52,6 +56,7 @@ const pages = [
 
         ],
     },
+    { path: 'admin-login', Component: AdminLogin },
 ];
 
 export default pages;

@@ -11,6 +11,7 @@ const ProductSchema = new mongoose.Schema({
     brand_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand' },
     type_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Type' },
     discount: { type: Number },
+    is_active: { type: Boolean, default: true },
     create_at: { type: Date, default: Date.now },
     update_at: { type: Date }
 }, {

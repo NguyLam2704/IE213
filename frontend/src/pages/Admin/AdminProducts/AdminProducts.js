@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import './AdminProducts.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-//import products from '../../../data/products';
-import { useGetProductsQuery } from '../../../features/product/productApi';
+import { useGetProductsQuery, useDeactiveProductMutation } from '../../../features/product/productApi';
 
 export default function AdminProducts() {
-  const {data: products = [], isLoading} = useGetProductsQuery();
-  const [productList, setProductList] = useState(products);
+  const {data: products = [], refetch, isLoading} = useGetProductsQuery();
+  const [deactiveProduct] = useDeactiveProductMutation();
   const [showConfirm, setShowConfirm] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const navigate = useNavigate();
@@ -18,8 +17,14 @@ export default function AdminProducts() {
     setShowConfirm(true);
   };
 
-  const confirmDelete = () => {
-    setProductList(productList.filter(p => p.id !== productToDelete));
+  const confirmDelete = async () => {
+    try {
+      await deactiveProduct(productToDelete).unwrap();
+      alert("Đã xóa sản phẩm thành công!");
+      refetch(); 
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
+    }
     setShowConfirm(false);
     setProductToDelete(null);
   };

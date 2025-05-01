@@ -2,7 +2,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faClipboardList, faLock, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faClipboardList, faLock, faSignOutAlt, faBars } from "@fortawesome/free-solid-svg-icons";
 import { Link, Outlet, useLocation, useNavigate, Navigate } from "react-router-dom";
 import "./User.css";
 
@@ -10,7 +10,7 @@ export default function User({ isAuthenticated, setIsAuthenticated }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false); // State hiển thị modal
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   if (location.pathname === "/user") {
     return <Navigate to="/user/profile" replace />;
   }
@@ -19,7 +19,7 @@ export default function User({ isAuthenticated, setIsAuthenticated }) {
   const menuItems = [
     { label: "Thông tin tài khoản", icon: faUser, path: "/user/profile" },
     { label: "Đơn hàng đã đặt", icon: faClipboardList, path: "/user/orders" },
-    { label: "Đổi mật khẩu", icon: faLock, path: "/user/change-password" },
+    { label: "Đổi mật khẩu", icon: faLock, path: "/user/reset-password" },
     { label: "Đăng xuất", icon: faSignOutAlt, path: "#" }, // Không điều hướng ngay
   ];
 
@@ -37,26 +37,33 @@ export default function User({ isAuthenticated, setIsAuthenticated }) {
       <div className="user-container">
         <div className="user-header-container">
           <p className="user-header">TRANG CHỦ {'>'} TRANG CÁ NHÂN</p>
+          <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            <FontAwesomeIcon icon={faBars} color="white" />
+          </button>
         </div>
 
         {/* Sidebar */}
         <div className="user-body">
-          <div className="sidebar">
-            {menuItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.path}
-                className={`sidebar-item ${location.pathname === item.path ? "active" : ""}`}
-                onClick={item.label === "Đăng xuất" ? (e) => { 
-                  e.preventDefault(); 
+        <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+          {menuItems.map((item, index) => (
+            <Link
+              key={index}
+              to={item.path}
+              className={`sidebar-item ${location.pathname === item.path ? "active" : ""}`}
+              onClick={(e) => {
+                if (item.label === "Đăng xuất") {
+                  e.preventDefault();
                   setShowLogoutModal(true);
-                } : null}
-              >
-                <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
-                {item.label}
-              </Link>
-            ))}
-          </div>
+                } else {
+                  setIsSidebarOpen(false); // Đóng sidebar sau khi chọn
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
+              {item.label}
+            </Link>
+          ))}
+        </div>
 
           {/* Nội dung chi tiết */}
           <div className="user-content">

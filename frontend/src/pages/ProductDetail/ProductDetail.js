@@ -107,20 +107,15 @@ export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
 
             </div>
             <p>Số lượng trong kho: {product.stock}</p>
-            
+            <p>Thương hiệu: {product.brand_id.brand_name || ''}</p>
+            <p>Danh mục: {product.category_id.category_name || ''}</p>
           </div>
         </div>
 
         <div className="section-heading">THÔNG TIN CHI TIẾT</div>
-        <div className="details">
-          <ul>
-            <li>{product.description || ''}</li>
-          </ul>
-          <ul>
-            <li>Thương hiệu: {product.brand_id.brand_name || ''}</li>
-            <li>Danh mục: {product.category_id.category_name || ''}</li>
-          </ul>
-        </div>
+          <div className="details">
+              <p>{product.description || ''}</p>
+          </div>
 
         <div className="home-section-title">Sản phẩm tương tự</div>
         <div className="similar-products">

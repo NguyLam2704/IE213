@@ -13,11 +13,11 @@ export const addToCart = createAsyncThunk(
     'cart/addToCart',
     async ({ product_id, quantity }, { rejectWithValue }) => {
         try {
-        const res = await apiAddItem({ product_id, quantity }, { withCredentials: true });
-        console.log(res)
-        return res.data; // dữ liệu trả về từ backend
-        } catch (error) {
-        return rejectWithValue(error.response.data);
+            
+            const response = await apiAddItem({ product_id, quantity });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
         }
     }
 );

@@ -44,11 +44,15 @@ function Home({ isAuthenticated, setIsAuthenticated }){
         <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
         
         <div className="home-container">
-         {/* SLIDER */}   
+         {/* SLIDER */}
             <div className="slider">
-                <img src={slides[currentSlide]} alt={`Slide ${currentSlide}`} />
-                <button onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)}>&lt;</button>
-                <button onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)}>&gt;</button>
+            <div className="slides" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                {slides.map((slide, index) => (
+                <img key={index} src={slide} alt={`Slide ${index}`} />
+                ))}
+            </div>
+            <button onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)}>&lt;</button>
+            <button onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)}>&gt;</button>
             </div>
         {/* CATEGORY */}
             <div className="category-section">
