@@ -1,6 +1,6 @@
 import api from "./axios"
 
-export const apiGetItem = async (productId) => {
+export const apiGetProduct = async (productId) => {
     return api.get(`api/v1/products/${productId}`);
 }
 

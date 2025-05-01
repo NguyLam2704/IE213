@@ -5,9 +5,16 @@ export const apiAddItem = (data) => {
 }
 
 export const apiUpdateItem = (data) => {
-    return api.patch('api/v1/cart/', data);
+    return api.put('api/v1/cart/', data);
 }
 
 export const apiGetItem = () => {
     return api.get('api/v1/cart/');
+}
+
+export const apiDeleteItem = (data) => {
+    return api.delete('api/v1/cart/', {
+        data: data,
+        withCredentials: true // nếu cần gửi cookie
+    });
 }

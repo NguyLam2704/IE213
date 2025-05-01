@@ -75,17 +75,23 @@ export const login = async (req, res) => {
         const token = generateToken({ _id: user._id, email: user.email, role: user.role });
 
         // Lưu refresh token vào cơ sở dữ liệu
-        const refreshToken =generateRefreshToken({ _id: user._id, email: user.email, role: user.role });
+        const refreshToken = generateRefreshToken({ _id: user._id, email: user.email, role: user.role });
 
         // Lưu refresh token vào database
         await User.findByIdAndUpdate(user._id, {refreshToken} ,{new:true})
 
-        res.cookie('refreshtoken',refreshToken, {httpOnly: true, maxAge: 7*24*3600*1000})
+        res.cookie('refreshtoken', refreshToken, {
+            httpOnly: true,
+            secure: false,          // chỉ bật true khi dùng HTTPS
+            sameSite: 'lax',        // hoặc 'none' nếu frontend ở khác domain
+            maxAge: 7 * 24 * 3600 * 1000 // 7 ngày
+        });
+        
 
         res.status(200).json({ 
             success: true,
             token,
-            user: { id: user.user_id, name: user.name, email: user.email, role: user.role, count_cart: user.count_cart }, 
+            user: { id: user._id, name: user.name, email: user.email, role: user.role, count_cart: user.count_cart }, 
         });
     } catch (error) {
         res.status(500).json({ message: "Lỗi  trong quá trình đăng nhập", error });

@@ -1,86 +1,123 @@
-// store/cartSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import {apiAddItem, apiGetItem} from '../../apis/cart.js'; // giả sử bạn export apiAddItem từ đây
-import { apiLogin } from '../../apis/user.js';
+// src/store/cart/cartSlice.js
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+    fetchCartThunk,
+    fetchCartWithProductsThunk,
+    changeCartItemThunk,
+    removeCartItemThunk
+    } from './cartThunks';
+import { apiAddItem } from '../../apis/cart';
 
-// 1. Tạo async thunk để gọi API và dispatch kết quả
-export const addItemToCart = createAsyncThunk(
-    'cart/',
+    // Gửi request lên server để thêm sản phẩm vào giỏ
+export const addToCart = createAsyncThunk(
+    'cart/addToCart',
     async ({ product_id, quantity }, { rejectWithValue }) => {
         try {
-            
-            const response = await apiAddItem({ product_id, quantity });
-            return response.data;
-        } catch (err) {
-            return rejectWithValue(err.response?.data || err.message);
+        const res = await apiAddItem({ product_id, quantity }, { withCredentials: true });
+        console.log(res)
+        return res.data; // dữ liệu trả về từ backend
+        } catch (error) {
+        return rejectWithValue(error.response.data);
         }
     }
 );
 
-// Lấy items trong cart
-export const fetchCart = createAsyncThunk(
-    'cart/fetchCart',
-    async (_, { rejectWithValue }) => {
-        try {
-        const response = await apiGetItem();
-        return response;
-        } catch (err) {
-        return rejectWithValue(err.response?.data || err.message);
+    const cartSlice = createSlice({
+    name: 'cart',
+    initialState: {
+        items: [],       // array of { product: ..., quantity: ... }
+        status: 'idle',  // 'idle' | 'loading' | 'succeeded' | 'failed'
+        error: null
+    },
+    reducers: { 
+        updateItemQuantity: (state, action) => {
+        const { productId, newQuantity } = action.payload;
+        const itemIndex = state.items.findIndex(item => item.product._id === productId);
+        
+        if (itemIndex >= 0) {
+            state.items[itemIndex].quantity += newQuantity;
         }
-    }
-);
-
-
-const cartSlice = createSlice({
-name: 'cart',
-initialState: { items: [], status: 'idle', error: null,totalQuantity: 0},
-reducers: {
-    setCartCount: (state, action) => {
-        state.totalQuantity = action.payload;
+        },
+      // Các reducer khác nếu có...
     },
-    updateQuantity: (state, action) => {
-    const { id, delta } = action.payload;
-    const item = state.items.find(item => item._id === id);
-    if (item) {
-        item.quantity = Math.max(1, item.quantity + delta);
-    }
-    },
-    removeItem: (state, action) => {
-    state.items = state.items.filter(item => item._id !== action.payload);
-    },
-},
+    extraReducers: builder => {
+        builder
+        // fetchCart
+        .addCase(fetchCartThunk.pending, state => {
+            state.status = 'loading';
+            state.error = null;
+        })
+        .addCase(fetchCartThunk.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.cart = action.payload;
+        })
+        .addCase(fetchCartThunk.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        })
 
-extraReducers: builder => {
-builder
-    .addCase(addItemToCart.pending, state => {
-    state.status = 'loading';
-    state.error = null;
-    })
-    .addCase(addItemToCart.fulfilled, (state, action) => {
-    state.status = 'succeeded';
-    // Cập nhật item từ server
-    state.item = action.payload;
-    // Tính tổng số lượng sản phẩm trong giỏ
-    state.totalQuantity += state.item.quantity;
-    })
-    .addCase(addItemToCart.rejected, (state, action) => {
-    state.status = 'failed';
-    state.error = action.payload;
-    })
-    .addCase(fetchCart.pending, state => {
-        state.status = 'loading';
-        state.error = null;
-    })
-    .addCase(fetchCart.fulfilled, (state, action) => {
+        // changeCartItem (add/update)
+        .addCase(changeCartItemThunk.pending, state => {
+            state.status = 'loading';
+            state.error = null;
+        })
+        .addCase(changeCartItemThunk.fulfilled, (state,action) => {
+            state.status = 'succeeded';
+                        // Cập nhật quantity của sản phẩm trong giỏ hàng
+            const updatedProduct = action.payload; // Đảm bảo payload chứa thông tin sản phẩm được cập nhật (ví dụ: có id và quantity mới)
+            // console.log("updatedProduct: ",updatedProduct);
+
+            // console.log("state.items: ",state.items);
+            // Tìm sản phẩm trong state.items và cập nhật quantity
+            const index = state.items.findIndex(item => item.product._id === updatedProduct.product._id);
+            if (index !== -1) {
+                state.items[index].quantity = updatedProduct.quantity;
+            }
+        })
+        .addCase(changeCartItemThunk.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        })
+
+        // removeCartItem
+        .addCase(removeCartItemThunk.pending, state => {
+            state.status = 'loading';
+            state.error = null;
+        })
+        .addCase(removeCartItemThunk.fulfilled, state => {
+            state.status = 'succeeded';
+        })
+        .addCase(removeCartItemThunk.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        })
+        // xử lý fetchCartWithProducts
+        .addCase(fetchCartWithProductsThunk.pending, state => {
+            state.status = 'loading';
+            state.error = null;
+        })
+        .addCase(fetchCartWithProductsThunk.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.items  = action.payload;
+            // console.log("items: ",state.items);
+        })
+        .addCase(fetchCartWithProductsThunk.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error  = action.payload;
+        })
+        .addCase(addToCart.pending, state => {
+            state.status = 'loading';
+            state.error = null;
+        })
+        .addCase(addToCart.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.items = action.payload; // Update giỏ hàng
-    })
-    .addCase(fetchCart.rejected, (state, action) => {
-    state.status = 'failed';
-    state.error = action.payload;
-    });
-}
+        })
+        .addCase(addToCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        });
+    }
 });
 
-export const { setCartCount, updateQuantity, removeItem } = cartSlice.actions;
+export const { updateItemQuantity } = cartSlice.actions;
 export default cartSlice.reducer;

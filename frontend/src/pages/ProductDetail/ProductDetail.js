@@ -10,11 +10,12 @@ import { useGetProductsQuery } from "../../features/product/productApi.js";
 import { apiAddItem } from '../../apis/cart.js';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItemToCart } from '../../app/store/cartSlice.js';
+import { addItemToCart, addToCart } from '../../app/store/cartSlice.js';
+import { fetchCartThunk, fetchCartWithProductsThunk } from '../../app/store/cartThunks.js';
 
 
 
-const ProductDetail = () => {
+export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
   const [quantity, setQuantity] = useState(1);
   const [itemCart,setitemCart] = useState();
   const { id } = useParams();
@@ -27,19 +28,18 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
 
   const handleAddToCart = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
     try {
-      // Gọi API thêm sản phẩm vào giỏ
-      const result = await dispatch(addItemToCart({
-        product_id: product._id,
-        quantity
-      }));
-
-      if (addItemToCart.fulfilled.match(result)) {
-        Swal.fire(`Thêm ${quantity} sản phẩm thành công!`, '', 'success');
-      }
+      await dispatch(addToCart({ product_id: product._id, quantity }))
+      .unwrap()
+      .then((res) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm vào giỏ hàng thành công!',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      })
+      dispatch(fetchCartWithProductsThunk());
     } catch (err) {
       console.error('Lỗi khi thêm vào giỏ:', err);
       setError('Thêm vào giỏ thất bại. Vui lòng thử lại.');
@@ -53,7 +53,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      <Header />
+      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
       <div className="container">
         <div className="breadcrumb">
           TRANG CHỦ {'>'} {product.category_id.category_name} {'>'} {product.prod_name}
@@ -141,4 +141,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+// export default ProductDetail;

@@ -24,6 +24,11 @@ export default function Register({ setIsAuthenticated }) {
       //Thông báo thành công
       const response = await apiRegister(data);
       Swal.fire('Đăng ký thành công!', '', 'success');
+      const token = response.token;
+      localStorage.setItem('authToken', token);
+      // Lưu user_id vào localStorage
+      localStorage.setItem('user_id', response.user.id);
+      navigate("/login");
     } catch (err) {
       //Lỗi từ API
       console.log('Lỗi từ API:', err.response?.data || err.message);

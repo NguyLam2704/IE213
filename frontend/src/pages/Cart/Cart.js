@@ -3,75 +3,64 @@ import { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart, removeItem, updateQuantity } from "../../app/store/cartSlice";
+import { fetchCart, removeItem, updateItemQuantity, updateQuantity } from "../../app/store/cartSlice";
 import { apiGetItem } from "../../apis/products";
+import { changeCartItemThunk, fetchCartThunk, removeCartItemThunk } from "../../app/store/cartThunks";
+const formatCurrency = (amount) => {
+  return amount.toLocaleString('vi-VN') + ' đ';
+};
+
 
 export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [productDetails, setProductDetails] = useState({});
-
+  // console.log(isAuthenticated)
   useEffect(() => {
-    dispatch(fetchCart());
-  }, [dispatch]);
-  
-  const items = useSelector(state => state.cart.items.items) || [];
-  // console.log("items: ",items);
-  
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const details = {};
-      // Duyệt từng item, fetch chi tiết sản phẩm
-      for (const item of items) {
-        if (!details[item.product]) { // Nếu chưa fetch
-          try {
-            const res = await apiGetItem(item.product);
-            details[item.product] = res.data; // Giả sử API trả { id, prod_name, price, image }
-            // console.log("res: ",res.data);
-          } catch (error) {
-            console.error("Failed to fetch product: ", item.product, error);
-          }
-        }
-      }
-      setProductDetails(details);
-    };
-
-
-    
-    // console.log("1 item: ",items);
-    if (items.length > 0) {
-      // console.log("ok")
-      fetchProducts();
+    if (isAuthenticated) {
+      dispatch(fetchCartThunk());
     }
-  }, [items]);
-  // console.log("detail: ",productDetails);
-  // console.log("items: ",items);
+  }, [dispatch, isAuthenticated]);
   
-  const cartItemsWithDetails = items.map(item => {
-    const product = productDetails[item.product] || {};
-    // console.log("product: ",product);
-    return {
-      ...item,
-      prod_name: product.prod_name,
-      price: product.price,
-      image: product.images?.find(img => img.is_primary_image)?.image 
-      || product.images?.[0]?.image 
-      || '',
-    };
-  });
+  // const cart = useSelector(state => state.cart);
+  // console.log("cart: ",cart);
+  const cartItemsWithDetails = useSelector(state => state.cart.items);
+  // console.log("detail",cartItemsWithDetails);
+  const handleQuantityChange = (productId, changeAmount) => {
+    const item = cartItemsWithDetails.find(item => item.product._id === productId);
+    if (!item) return;
   
-  // console.log("cartItemsWithDetails: ",cartItemsWithDetails);
-  const handleQuantityChange = (id, delta) => {
-    dispatch(updateQuantity({ id, delta }));
+    const newQuantity = item.quantity + changeAmount;
+  
+    if (newQuantity < 1) {
+      // Có thể yêu cầu xác nhận xoá luôn nếu < 1
+      dispatch(removeCartItemThunk(productId));
+    } else {
+      dispatch(changeCartItemThunk({
+        product_id: productId,
+        quantity: newQuantity,
+      }));
+    }
   };
   
-  const handleRemove = (id) => {
-    dispatch(removeItem(id));
+  
+  const handleRemove = (productId) => {
+    dispatch(removeCartItemThunk({
+      product_id: productId
+    }));
   };
-  
-  const totalPrice = Array.isArray(items) ? items.reduce((total, item) => total + item.price * item.quantity, 0) : 0;
-  const totalQuantity = Array.isArray(items) ? items.reduce((sum, item) => sum + item.quantity, 0) : 0;
-  
+
+  const handleCheckout = async () => {
+  // Chỉ gọi API khi người dùng thanh toán
+  await dispatch(changeCartItemThunk(cartItemsWithDetails));
+  navigate('/order');
+};
+
+  // console.log("cartItemsWithDetails", cartItemsWithDetails);
+  const totalQuantity = cartItemsWithDetails.reduce((sum, item) => sum + item.quantity, 0);
+  // const totalQuantity = 0;
+  // const totalPrice = 0;
+  const totalPrice = cartItemsWithDetails.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+
 
   return (
 
@@ -91,25 +80,26 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
         </div>
 
         {cartItemsWithDetails.map(item => (
-          <div className="cart-item" key={item._id}>
+          <div className="cart-item" key={item.product._id}>
             
             <div className="product-info">
-              <img src={item.image} alt="giay" />
-              <span>{item.prod_name}</span>
+              <img src={item.product.images.find(img => img.is_primary_image)?.image} alt={item.product.prod_name} />
+
+              <span>{item.product.prod_name}</span>
             </div>
-            <div>{item.price} đ</div>
+            <div>{formatCurrency(item.product.price)}</div>
             <div className="quantity-control">
-              <button onClick={() => handleQuantityChange(item.product, -1)}>-</button>
+              <button onClick={() => handleQuantityChange(item.product._id, -1)}>-</button>
               <span>{item.quantity}</span>
-              <button onClick={() => handleQuantityChange(item.product, 1)}>+</button>
+              <button onClick={() => handleQuantityChange(item.product._id, 1)}>+</button>
             </div>
-            <div>{(item.price * item.quantity).toLocaleString()} đ</div>
-            <button className="delete-button" onClick={() => handleRemove(item.product)}>Xóa</button>
+            <div>{formatCurrency(item.product.price * item.quantity)}</div>
+            <button className="delete-button" onClick={() => handleRemove(item.product._id)}>Xóa</button>
           </div>
         ))}
 
         <div className="total-price">
-          Tổng tiền: <strong>{totalPrice.toLocaleString()} đ</strong>
+          Tổng tiền: <strong>{formatCurrency(totalPrice)}</strong>
         </div>
       </div>
 
@@ -121,8 +111,8 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
         </div>
         <div className="summary-box">
           <p><strong>Số lượng:</strong> {totalQuantity}</p>
-          <p><strong>Thành tiền:</strong> {totalPrice.toLocaleString()} đ</p>
-          <button className="checkout-button"  onClick={() => navigate('/order')}>THANH TOÁN</button>
+          <p><strong>Thành tiền:</strong> {formatCurrency(totalPrice)}</p>
+          <button className="checkout-button"  onClick={() => handleCheckout()}>THANH TOÁN</button>
         </div>
       </div>
 

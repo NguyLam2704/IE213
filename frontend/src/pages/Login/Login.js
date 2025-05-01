@@ -8,6 +8,9 @@ import { apiLogin } from "../../apis/user";
 import Swal from "sweetalert2";
 import { setCartCount } from "../../app/store/cartSlice";
 import { useDispatch } from "react-redux";
+import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { fetchCartThunk } from "../../app/store/cartThunks";
+import { loginThunk } from "../../app/store/authThunks";
 
 export default function Login({ setIsAuthenticated }) {
   const dispatch = useDispatch();
@@ -15,19 +18,19 @@ export default function Login({ setIsAuthenticated }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+
+
   const handleLogin = async(e) => {
     e.preventDefault();
     try {
-      const response = await apiLogin({email,password});
-      //Thông báo thành công
+      // const response = await apiLogin({email,password});
+      // //Thông báo thành công
+      // console.log('Đăng nhập thành công:', response);
       Swal.fire('Đăng nhập thành công!', '', 'success');
       setIsAuthenticated(true);
-      localStorage.setItem("isAuthenticated", "true"); // Lưu trạng thái đăng nhập
-      // Dispatch count_cart từ API vào Redux
-      const count = response.user.count_cart || 0;
-      dispatch(setCartCount(count));
-      const token = response.token;
-      localStorage.setItem('authToken', token);
+      dispatch(loginThunk({email,password}));
+      console.log(document.cookie); 
+    // Sau cùng mới điều hướng
       navigate("/");
     } catch (err) {
       //Lỗi từ API

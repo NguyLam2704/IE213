@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from "bcrypt";
 import crypto from 'crypto';
-// import { removeListener } from 'process';
 
 const UserSchema = new mongoose.Schema({
     user_id: { type: Number, unique: true },
@@ -16,16 +15,7 @@ const UserSchema = new mongoose.Schema({
     refreshToken: { type: String },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
-    cart: [
-        {
-            product: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product'
-            },
-            quantity: Number
-        }
-    ],
-    count_cart: {type: Number},
+    count_type_cart: {type: Number},
 });
 
 // Băm mật khẩu trước khi lưu
