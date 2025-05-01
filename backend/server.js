@@ -38,10 +38,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Middleware
-app.use(cors({
-    origin: 'http://localhost:3000', // KHÔNG được dùng '*'
-    credentials: true               // Cho phép gửi cookie
-}));
+app.use(cors());
 
 // Routes
 app.use("/api/v1/users", userRoutes);
