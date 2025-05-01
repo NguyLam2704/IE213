@@ -37,6 +37,12 @@
   padding: 20px 0;
   border-right: 1px solid #e0e0e0;
   transition: transform 0.3s ease-in-out;
+
+  position: sticky;
+  top: 0px;
+  align-self: flex-start; 
+  height: fit-content;
+  z-index: 10;
 }
 
 .ad-logo {
@@ -86,14 +92,15 @@
 
   .ad-sidebar {
     position: fixed;
-    top: 60px;
     bottom: 0;
     left: 0;
     width: 220px;
+    height: 100%;
     background-color: #fff;
     z-index: 1000;
     transform: translateX(-100%);
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    margin-top: 60px; /* không cần margin trong fixed layout */
   }
 
   .ad-sidebar.open {

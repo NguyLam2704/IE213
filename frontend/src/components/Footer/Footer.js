@@ -16,9 +16,7 @@ const Footer = () => {
       <div className="footer-section">
         <h3>Giới thiệu</h3>
         <ul>
-          <li><a href="#">Liên hệ</a></li>
           <li><a href="#">Thông tin về chúng tôi</a></li>
-          <li><a href="#">Sản phẩm kinh doanh</a></li>
         </ul>
       </div>
 
@@ -32,12 +30,11 @@ const Footer = () => {
       </div>
 
       <div className="footer-section">
-        <h3>Khuyến mãi & ưu đãi</h3>
-        <p>Đăng ký nhận thông tin khuyến mãi & ưu đãi tại đây:</p>
-        <div className="subscribe">
-          <input type="email" placeholder="Nhập email" />
-          <button>Đăng ký</button>
-        </div>
+        <h3>Hỗ trợ khách hàng</h3>
+        <ul>
+          <li><a href="#">Chính sách đổi trả</a></li>
+          <li><a href="#">Chính sách bảo hành</a></li>
+        </ul>
       </div>
     </footer>
   );

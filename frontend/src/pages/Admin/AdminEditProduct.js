@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminProductForm from './AdminProductForm/AdminProductForm';
 import { useGetProductsQuery, useUpdateProductMutation } from '../../features/product/productApi';
-import { useCreateProductImageMutation } from '../../features/services/productImageApi';
+import { useCreateProductImageMutation, useDeleteImagesByProductIdMutation } from '../../features/services/productImageApi';
 
 const AdminEditProduct = () => {
   const { id } = useParams();
@@ -11,6 +11,7 @@ const AdminEditProduct = () => {
   const { data: products = [], isLoading, refetch } = useGetProductsQuery();
   const [updateProduct] = useUpdateProductMutation();
   const [uploadImage] = useCreateProductImageMutation();
+  const [deleteImages] = useDeleteImagesByProductIdMutation();
 
   const initialData = products.find((p) => p._id === id);
 
@@ -22,16 +23,21 @@ const AdminEditProduct = () => {
       await updateProduct({ id, productData }).unwrap();
 
       // B2: Upload ảnh mới nếu có
-      if (images && images.length > 0 && images[0] instanceof File) {
-        for (let i = 0; i < images.length; i++) {
+      const newImages = images.filter((img) => img instanceof File);
+
+        
+      if (newImages.length > 0) {
+        // Xóa toàn bộ ảnh cũ trước
+        await deleteImages(id).unwrap();
+        console.log('Đã xóa ảnh cũ');
+        for (let i = 0; i < newImages.length; i++) {
           const formData = new FormData();
-          formData.append('image', images[i]);
+          formData.append('image', newImages[i]);
           formData.append('prod_id', id);
           formData.append('is_primary_image', i === 0 ? 'true' : 'false');
           await uploadImage(formData).unwrap();
         }
       }
-
       await refetch();
       if (window.confirm("Cập nhật thành công! Quay lại danh sách?")) {
         navigate('/admin/products');
