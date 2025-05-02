@@ -52,7 +52,7 @@ const pages = [
             { path: 'products', Component: AdminProducts },
             { path: 'products/add', Component: AdminAddProduct },
             { path: 'products/:id', Component: AdminProductDetail },
-            { path: 'products/:id/edit', Component: AdminEditProduct },
+            { path: 'products/edit/:id', Component: AdminEditProduct },
             { path: 'orders', Component: AdminOrders },
             { path: 'orders/:id', Component: AdminOrderDetail },
 

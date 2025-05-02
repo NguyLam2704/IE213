@@ -3,7 +3,7 @@ import { useNavigate, useParams  } from 'react-router-dom';
 import { useGetProductsQuery} from '../../../features/product/productApi';
 import './AdminProductForm.css';
 
-const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
+const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading = false }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data: products = [] } = useGetProductsQuery();
@@ -150,8 +150,10 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
       </div>
 
       <div className="form-actions">
-        <button type="submit">{isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}</button>
-        <button type="button" className="cancel" onClick={() => navigate("/admin/products")}>Hủy</button>
+        <button type="submit">
+           {loading ? 'Đang xử lý...' : isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}
+        </button>
+        <button type="button" className="cancel" onClick={() => navigate("/admin/products")} disabled={loading}>Hủy</button>
       </div>
     </form>
   );

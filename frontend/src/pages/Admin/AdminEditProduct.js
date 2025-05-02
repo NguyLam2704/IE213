@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminProductForm from './AdminProductForm/AdminProductForm';
 import { useGetProductsQuery, useUpdateProductMutation } from '../../features/product/productApi';
@@ -6,16 +6,18 @@ import { useCreateProductImageMutation, useDeleteImagesByProductIdMutation } fro
 
 const AdminEditProduct = () => {
   const { id } = useParams();
+
   const navigate = useNavigate();
 
   const { data: products = [], isLoading, refetch } = useGetProductsQuery();
   const [updateProduct] = useUpdateProductMutation();
   const [uploadImage] = useCreateProductImageMutation();
   const [deleteImages] = useDeleteImagesByProductIdMutation();
-
   const initialData = products.find((p) => p._id === id);
+  const [loading, setLoading] = useState(false);
 
   const handleUpdate = async (data) => {
+    setLoading(true);
     try {
       const { images, ...productData } = data;
 
@@ -29,7 +31,6 @@ const AdminEditProduct = () => {
       if (newImages.length > 0) {
         // Xóa toàn bộ ảnh cũ trước
         await deleteImages(id).unwrap();
-        console.log('Đã xóa ảnh cũ');
         for (let i = 0; i < newImages.length; i++) {
           const formData = new FormData();
           formData.append('image', newImages[i]);
@@ -46,6 +47,8 @@ const AdminEditProduct = () => {
     } catch (err) {
       console.error("Lỗi khi cập nhật sản phẩm:", err);
       alert("Không thể cập nhật sản phẩm. Kiểm tra thông tin hoặc kết nối mạng.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,6 +60,7 @@ const AdminEditProduct = () => {
         initialData={initialData}
         onSubmit={handleUpdate}
         isEdit
+        loading={loading}
       />
     </div>
   );

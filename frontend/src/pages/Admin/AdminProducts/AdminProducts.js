@@ -11,6 +11,7 @@ export default function AdminProducts() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const navigate = useNavigate();
+  
 
   const handleDelete = (productId) => {
     setProductToDelete(productId);
@@ -56,7 +57,7 @@ export default function AdminProducts() {
                   <FontAwesomeIcon 
                     icon={faPenToSquare} 
                     className="icon edit" 
-                    onClick={() => navigate(`/admin/products/${product.id}/edit`)} 
+                    onClick={() => navigate(`/admin/products/edit/${product.id}`)} 
                   />
                   <FontAwesomeIcon 
                     icon={faTrash} 
