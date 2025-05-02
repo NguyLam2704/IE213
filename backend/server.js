@@ -19,6 +19,7 @@ import dashboardRouter from "./routes/dashboard.route.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5001;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 connectDB();
 
 const app = express();
@@ -38,7 +39,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000", // KHÔNG được dùng '*'
+    credentials: true               // Cho phép gửi cookie
+}));
 
 // Routes
 app.use("/api/v1/users", userRoutes);
