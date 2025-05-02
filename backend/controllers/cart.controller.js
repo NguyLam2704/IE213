@@ -26,6 +26,8 @@ export const addCart = async (req, res) => {
         });
     }
 
+    //Lấy item trong cart
+    // console.log(cart_user.cart," ", product_id);
     if (!cart_user.cart){
         await Cart.updateOne(
             { user_id: user_id },
@@ -197,6 +199,7 @@ export const getCart = async (req, res) => {
 //thay đổi số lượng sản phẩm trong giỏ hàng
 export const changeCart = async (req, res) => {
     //Lấy userid từ token
+    // console.log(req.user._id)
     const user_id = req.user._id;
     // console.log(user_id);
     const {product_id,quantity} = req.body;

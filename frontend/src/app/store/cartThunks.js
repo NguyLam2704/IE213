@@ -11,7 +11,6 @@ export const fetchCartThunk = createAsyncThunk(
         try {
         const res = await apiGetItem();
         // API trả: { success: true, items: [...] }
-        console.log('API Response:', res);
         return res.cart;
         } catch (err) {
         return rejectWithValue(err.response?.data?.message || err.message);

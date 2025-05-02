@@ -54,7 +54,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   navigate('/order');
 };
 
-  console.log("cartItemsWithDetails", cartItemsWithDetails);
+  // console.log("cartItemsWithDetails", cartItemsWithDetails);
   const totalQuantity = cartItemsWithDetails.reduce((sum, item) => sum + item.quantity, 0);
   // const totalQuantity = 0;
   // const totalPrice = 0;
