@@ -24,7 +24,6 @@ const AdminStatistics = () => {
   const endDate = dayjs().format('YYYY-MM-DD');
   const startDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
 
- 
   const { data, isLoading, isError } = useGetStatisticsQuery({ startDate, endDate });
 
   if (isLoading) return <p>Đang tải dữ liệu thống kê...</p>;

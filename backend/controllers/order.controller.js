@@ -1,6 +1,6 @@
+import Cart from '../models/cart.model.js';
 import Order from '../models/order.model.js'
 import OrderDetail from '../models/order_detail.js';
-import User from '../models/user.model.js';
 
 
 export const fetchOrderHistory = async (req, res) => {
@@ -26,27 +26,45 @@ export const fetchOrderHistory = async (req, res) => {
 }
 
 export const createOrder = async (req, res) => {
-    const {_id} = req.user;
-    const userCard = await User.findById(_id).select("cart");
-    if (!req.body.total_price || !req.body || !req.body.pay_mehtod) {
-        return res.status(400).json({success: false, message: "Please provide all fields"});
-    }
-    const {total_price, pay_method} = req.body;
-    const newOrder = new Order({
-        pay_method,
-        total_price,
-        dateCreated: new Date(),
-        status: "pending",
-    });
-
     try {
-        const savedOrder = await newOrder.save();
-        res.status(201).json({success: true, data: savedOrder});
-    } catch (e) {
-        console.error("Error in Create Order:", e.message);
-        res.status(500).json({success: false, message: "Server Error"});
+        const user_id = req.user._id;
+        
+        const { name, address, phone, email, note } = req.body.shipping;
+        
+        // console.log("ok")
+        const cartDoc = await Cart.findOne({ user_id: user_id }).populate('cart.product');
+        // console.log("ok")
+        // console.log(cartDoc," ", user_id, " ",req.user);
+        if (!cartDoc || cartDoc.cart.length === 0) {
+            return res.status(400).json({ success: false, message: 'Giỏ hàng trống.' });
+        }
+    // Chuẩn bị danh sách items với snapshot giá
+        const items = cartDoc.cart.map(ci => ({
+            product: ci.product._id,
+            quantity: ci.quantity,
+            price: ci.product.price
+        }));
+
+        // Tính tổng
+        const total = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+
+        // Tạo Order
+        const order = await Order.create({
+            user_id,
+            items,
+            shipping: { name, address, phone, email, note },
+            total
+        });
+
+        // Xoá giỏ hàng của user
+        await Cart.updateOne({ user_id }, { $set: { cart: [] } });
+
+        return res.status(201).json({ success: true, order });
+    } catch (err) {
+        console.error('Error createOrder:', err);
+        return res.status(500).json({ success: false, message: 'Server Error' });
     }
-}
+};
 
 export const fetchAllOrders = async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;

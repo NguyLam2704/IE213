@@ -11,8 +11,8 @@ export const fetchCartThunk = createAsyncThunk(
         try {
         const res = await apiGetItem();
         // API trả: { success: true, items: [...] }
-        // console.log("res fetch cart", res);
-        return res.items;
+        console.log('API Response:', res);
+        return res.cart;
         } catch (err) {
         return rejectWithValue(err.response?.data?.message || err.message);
         }
@@ -30,7 +30,7 @@ export const fetchCartThunk = createAsyncThunk(
         // console.log('API Response:', res);
         // Sau mỗi thao tác thành công, re-fetch cart
          // Trả về thông tin sản phẩm được cập nhật, có thể bao gồm productId và quantity mới
-        dispatch(fetchCartWithProductsThunk());
+        dispatch(fetchCartThunk());
 
         return {
             product: res.data.product_id,  // Giả sử API trả về thông tin product
@@ -50,7 +50,7 @@ export const fetchCartThunk = createAsyncThunk(
         try {
         await apiDeleteItem({product_id});
         // Sau khi xóa, re-fetch cart
-        dispatch(fetchCartWithProductsThunk());
+        dispatch(fetchCartThunk());
         } catch (err) {
         return rejectWithValue(err.response?.data?.message || err.message);
         }
@@ -71,31 +71,31 @@ export const fetchProductById = createAsyncThunk(
     }
 );
 
-// 2. Thunk tổng hợp: fetch cart rồi fetch chi tiết tất cả products trong cart
-export const fetchCartWithProductsThunk = createAsyncThunk(
-    'cart/fetchCartWithProducts',
-    async (_, { dispatch, rejectWithValue }) => {
-    try {
-        // a) Lấy mảng cart items: [{ product: id, quantity }, ...]
-        const cartItems = await dispatch(fetchCartThunk()).unwrap();
-        // console.log("cartItems", cartItems);
-        // b) Với mỗi cartItem, dispatch fetchProductById và chờ kết quả
-        const detailedItems = await Promise.all(
-        cartItems.map(async item => {
-            // console.log("item", item.product);
-            const product = await dispatch(fetchProductById(item.product)).unwrap();
-            // console.log("product", product);
-            return {
-            product: product.data,       // full product detail object
-            quantity: item.quantity
-            };
-        })
-        );
+// // 2. Thunk tổng hợp: fetch cart rồi fetch chi tiết tất cả products trong cart
+// export const fetchCartWithProductsThunk = createAsyncThunk(
+//     'cart/fetchCartWithProducts',
+//     async (_, { dispatch, rejectWithValue }) => {
+//     try {
+//         // a) Lấy mảng cart items: [{ product: id, quantity }, ...]
+//         const cartItems = await dispatch(fetchCartThunk()).unwrap();
+//         // console.log("cartItems", cartItems);
+//         // b) Với mỗi cartItem, dispatch fetchProductById và chờ kết quả
+//         const detailedItems = await Promise.all(
+//         cartItems.map(async item => {
+//             // console.log("item", item.product);
+//             const product = await dispatch(fetchProductById(item.product)).unwrap();
+//             // console.log("product", product);
+//             return {
+//             product: product.data,       // full product detail object
+//             quantity: item.quantity
+//             };
+//         })
+//         );
 
-        // c) Trả về mảng đã ghép
-        return detailedItems; // [ { product: {…}, quantity }, … ]
-    } catch (err) {
-        return rejectWithValue(err);
-    }
-    }
-);
+//         // c) Trả về mảng đã ghép
+//         return detailedItems; // [ { product: {…}, quantity }, … ]
+//     } catch (err) {
+//         return rejectWithValue(err);
+//     }
+//     }
+// );

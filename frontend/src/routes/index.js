@@ -22,6 +22,7 @@ import AdminLogin from '../pages/Admin/AdminLogin/AdminLogin';
 
 
 import { Navigate } from "react-router-dom";
+import PaymentSuccess from '../pages/Payment/Payment';
 
 const pages = [
     { path: routes.home, Component: Home },
@@ -31,6 +32,7 @@ const pages = [
     { path: routes.product, Component: ProductDetail },
     { path: routes.cart, Component: Cart },
     { path: routes.order, Component: Order },
+    { path: routes.paymentSuccess, Component: PaymentSuccess },
     { path: `${routes.products}/:category`, Component: Products },
     { 
         path: routes.user, 

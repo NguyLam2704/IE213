@@ -38,6 +38,9 @@ export const addToCart = createAsyncThunk(
             state.items[itemIndex].quantity += newQuantity;
         }
         },
+        clearCart: (state) => {
+            state.items = [];
+        },
       // Các reducer khác nếu có...
     },
     extraReducers: builder => {
@@ -50,6 +53,7 @@ export const addToCart = createAsyncThunk(
         .addCase(fetchCartThunk.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.cart = action.payload;
+            console.log("action.payload: ",action.payload);
         })
         .addCase(fetchCartThunk.rejected, (state, action) => {
             state.status = 'failed';
@@ -91,20 +95,6 @@ export const addToCart = createAsyncThunk(
             state.status = 'failed';
             state.error = action.payload;
         })
-        // xử lý fetchCartWithProducts
-        .addCase(fetchCartWithProductsThunk.pending, state => {
-            state.status = 'loading';
-            state.error = null;
-        })
-        .addCase(fetchCartWithProductsThunk.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            state.items  = action.payload;
-            // console.log("items: ",state.items);
-        })
-        .addCase(fetchCartWithProductsThunk.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error  = action.payload;
-        })
         .addCase(addToCart.pending, state => {
             state.status = 'loading';
             state.error = null;
@@ -119,5 +109,5 @@ export const addToCart = createAsyncThunk(
     }
 });
 
-export const { updateItemQuantity } = cartSlice.actions;
+export const { updateItemQuantity,clearCart  } = cartSlice.actions;
 export default cartSlice.reducer;

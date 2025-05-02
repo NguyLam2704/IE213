@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faUser, faSearch, faBars, faTimes, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import "./Header.css"; 
 import { useNavigate } from "react-router-dom";
-import { selectTotalQuantity } from '../../../src/app/store/selectors.js';
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm, clearSearchTerm } from "../../features/search/searchSlice";
 import { useGetProductsQuery } from "../../features/product/productApi";
@@ -13,8 +12,10 @@ import { useGetCategoriesQuery } from "../../features/services/categoryApi.js";
 // import logo from "../../assets/Logo2-long.png"
 
 export default function Header({ isAuthenticated, setIsAuthenticated }) {
-  const count = useSelector(state => state.cart.items.length);
-  const totalQuantity = useSelector(selectTotalQuantity);
+  const count = useSelector(state => state.cart?.cart?.length || 0);
+ // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
+  // const count = 0 // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
+  // console.log(count, "statr");
   const { data: categories, isLoading, isError } = useGetCategoriesQuery();
   // SEARCH BAR
   const dispatch = useDispatch();

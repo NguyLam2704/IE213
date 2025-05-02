@@ -1,26 +1,32 @@
+// models/order.model.js
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
-const OrderSchema = new mongoose.Schema({
-    order_id: { type: Number, required: true, unique: true },
-    products: [{
-        product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        count: {type: Number, default: 1},
-        color: {type: String},
-    }],
-    dateCreated: { type: Date, default: Date.now },
-    total_price: { type: Number, required: true },
-    status: { 
-        type: String ,
-        default: "Processing",
-        enum: ["Cancelled","Processing","Succeeded"],
-    },    
-    pay_method: { type: String },
-    orderBy: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-    }
-}); 
+const orderSchema = new mongoose.Schema({
+    order_id: { 
+        type: String, 
+        required: true, 
+        unique: true,  // Ensure this field is unique
+        default: () => uuidv4()  // Generate a unique UUID for each order
+    },
+    user_id: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+    items: [
+        {
+        product: { type: mongoose.Types.ObjectId, ref: 'Product', required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true }, // snapshot giá khi đặt
+        }
+    ],
+    shipping: {
+        name:    { type: String, required: true },
+        address: { type: String, required: true },
+        phone:   { type: String, required: true },
+        email:   { type: String, required: true },
+        note:    { type: String }
+    },
+    total:   { type: Number, required: true },
+    status:  { type: String, default: 'Pending' }, // Pending, Confirmed, Shipped...
+    createdAt: { type: Date, default: Date.now }
+});
 
-const Order = mongoose.model('Order', OrderSchema);
-
-export default Order;
+export default mongoose.model('Order', orderSchema);

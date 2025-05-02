@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../apis/axios';
-import { fetchCartThunk, fetchCartWithProductsThunk } from './cartThunks';
+import { fetchCartThunk} from './cartThunks';
 import { apiLogin } from '../../apis/user';
 
 export const loginThunk = createAsyncThunk(
@@ -15,7 +14,7 @@ export const loginThunk = createAsyncThunk(
 
     // console.log('authToken', res.token);
     // sau khi login thành công, dispatch fetchCart
-    dispatch(fetchCartWithProductsThunk());  // ← đổ đầy luôn cả product details
+    dispatch(fetchCartThunk());  // ← đổ đầy luôn cả product details
     return res;
     }
 );

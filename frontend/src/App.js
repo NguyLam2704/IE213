@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Provider, useDispatch } from 'react-redux';
 import { store } from './app/store/store';
 import api from './apis/axios';
-import { fetchCartThunk, fetchCartWithProductsThunk } from './app/store/cartThunks';
+import { fetchCartThunk} from './app/store/cartThunks';
 
 function App() {
     const dispatch = useDispatch();
@@ -14,11 +14,10 @@ function App() {
     );
     useEffect(() => {
         dispatch(fetchCartThunk());
-        dispatch(fetchCartWithProductsThunk());
         const checkAuth = async () => {
             try {
                 const res = await api.post('api/v1/users/refreshtoken', {}, { withCredentials: true });
-                localStorage.setItem("authToken", res.data.accessToken);
+                localStorage.setItem("authToken", res.newAccessToken);
                 localStorage.setItem("isAuthenticated", "true");
                 setIsAuthenticated(true);
             } catch (err) {

@@ -1,10 +1,8 @@
 import Header from "../../components/Header/Header";
 import { useEffect} from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart, removeItem, updateItemQuantity, updateQuantity } from "../../app/store/cartSlice";
-import { apiGetItem } from "../../apis/products";
 import { changeCartItemThunk, fetchCartThunk, removeCartItemThunk } from "../../app/store/cartThunks";
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' đ';
@@ -23,7 +21,8 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   
   // const cart = useSelector(state => state.cart);
   // console.log("cart: ",cart);
-  const cartItemsWithDetails = useSelector(state => state.cart.items);
+  const cartItemsWithDetails = useSelector(state => state.cart?.cart || []);
+
   // console.log("detail",cartItemsWithDetails);
   const handleQuantityChange = (productId, changeAmount) => {
     const item = cartItemsWithDetails.find(item => item.product._id === productId);
@@ -55,7 +54,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   navigate('/order');
 };
 
-  // console.log("cartItemsWithDetails", cartItemsWithDetails);
+  console.log("cartItemsWithDetails", cartItemsWithDetails);
   const totalQuantity = cartItemsWithDetails.reduce((sum, item) => sum + item.quantity, 0);
   // const totalQuantity = 0;
   // const totalPrice = 0;
@@ -83,7 +82,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
           <div className="cart-item" key={item.product._id}>
             
             <div className="product-info">
-              <img src={item.product.images.find(img => img.is_primary_image)?.image} alt={item.product.prod_name} />
+              <img src={item.product.image} alt={item.product.prod_name} />
 
               <span>{item.product.prod_name}</span>
             </div>
