@@ -10,14 +10,13 @@ import { useGetProductsQuery } from "../../features/product/productApi.js";
 import { apiAddItem } from '../../apis/cart.js';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItemToCart, addToCart } from '../../app/store/cartSlice.js';
-import { fetchCartThunk, fetchCartWithProductsThunk } from '../../app/store/cartThunks.js';
+import {addToCart } from '../../app/store/cartSlice.js';
+import { fetchCartThunk } from '../../app/store/cartThunks.js';
 
 
 
 export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
   const [quantity, setQuantity] = useState(1);
-  const [itemCart,setitemCart] = useState();
   const { id } = useParams();
   const {data: products = []} = useGetProductsQuery();
   const product = products.find((p) => p._id === id);
@@ -39,7 +38,7 @@ export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
           timer: 1000
         });
       })
-      dispatch(fetchCartWithProductsThunk());
+      dispatch(fetchCartThunk());
     } catch (err) {
       console.error('Lỗi khi thêm vào giỏ:', err);
       setError('Thêm vào giỏ thất bại. Vui lòng thử lại.');

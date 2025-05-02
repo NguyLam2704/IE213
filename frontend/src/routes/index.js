@@ -22,6 +22,7 @@ import AdminLogin from '../pages/Admin/AdminLogin/AdminLogin';
 
 
 import { Navigate } from "react-router-dom";
+import PaymentSuccess from '../pages/Payment/Payment';
 
 const pages = [
     { path: routes.home, Component: Home },
@@ -31,6 +32,7 @@ const pages = [
     { path: routes.product, Component: ProductDetail },
     { path: routes.cart, Component: Cart },
     { path: routes.order, Component: Order },
+    { path: routes.paymentSuccess, Component: PaymentSuccess },
     { path: `${routes.products}/:category`, Component: Products },
     { 
         path: routes.user, 
@@ -50,7 +52,7 @@ const pages = [
             { path: 'products', Component: AdminProducts },
             { path: 'products/add', Component: AdminAddProduct },
             { path: 'products/:id', Component: AdminProductDetail },
-            { path: 'products/:id/edit', Component: AdminEditProduct },
+            { path: 'products/edit/:id', Component: AdminEditProduct },
             { path: 'orders', Component: AdminOrders },
             { path: 'orders/:id', Component: AdminOrderDetail },
 

@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams  } from 'react-router-dom';
-import { useGetProductsQuery, useCreateProductMutation, useUpdateProductMutation } from '../../../features/product/productApi';
-import { useCreateProductImageMutation } from '../../../features/services/productImageApi';
+import { useGetProductsQuery} from '../../../features/product/productApi';
 import './AdminProductForm.css';
 
-const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
+const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading = false }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data: products = [] } = useGetProductsQuery();
 
-
-  // (SẼ REDUX SAU) Rút các mảng cần thiết từ danh sách sản phẩm 
   const categories = useMemo(() => {
     const unique = {};
     return products.reduce((acc, curr) => {
@@ -65,7 +62,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
   useEffect(() => {
     if (isEdit && initialData) {
       const existingImages = (initialData.images || []).map(img =>
-        typeof img === 'string' ? img : img.image_url
+        typeof img === 'string' ? img : img.image
       );
   
       setFormData({
@@ -79,6 +76,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
       setImagePreview(existingImages);
     }
   }, [initialData, isEdit]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,8 +85,9 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const preview = files.map((file) => URL.createObjectURL(file));
-    setImagePreview(preview); // hoặc [...imagePreview, ...preview] nếu muốn giữ ảnh cũ
+    const previews = files.map((file) => URL.createObjectURL(file));
+    
+    setImagePreview(previews);
     setFormData((prev) => ({ ...prev, images: files }));
   };
 
@@ -151,8 +150,10 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
       </div>
 
       <div className="form-actions">
-        <button type="submit">{isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}</button>
-        <button type="button" className="cancel" onClick={() => navigate("/admin/products")}>Hủy</button>
+        <button type="submit">
+           {loading ? 'Đang xử lý...' : isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}
+        </button>
+        <button type="button" className="cancel" onClick={() => navigate("/admin/products")} disabled={loading}>Hủy</button>
       </div>
     </form>
   );

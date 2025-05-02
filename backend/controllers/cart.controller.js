@@ -1,6 +1,7 @@
 import User from '../models/user.model.js';
 import Cart from '../models/cart.model.js';
 import mongoose from 'mongoose';
+import ProductImage from '../models/productImage.model.js';
 
 //thêm/giảm sản phẩm trong giỏ hàng
 export const addCart = async (req, res) => {
@@ -24,6 +25,7 @@ export const addCart = async (req, res) => {
             message: "Create new cart",
         });
     }
+
     //Lấy item trong cart
     // console.log(cart_user.cart," ", product_id);
     if (!cart_user.cart){
@@ -158,26 +160,46 @@ export const deleteCart = async (req, res) => {
 
 //lấy hết sản phẩm trong giỏ hàng
 export const getCart = async (req, res) => {
-    //Lấy userid từ token
-    // console.log(req.user._id)
-    const user_id = req.user._id;
-
     try {
-        // console.log(user_id);
-        // Đúng: tìm document Cart có trường user_id khớp
-        const cart_user = await Cart.findOne({ user_id: user_id });
-        // console.log(cart_user);
-        const cartItem = cart_user.cart;
-        res.status(201).json({success: true, items: cartItem});
-    } catch (e) {
-        console.error("Error in get cart:", e.message);
-        res.status(500).json({success: false, message: "Server Error"});
+        const cartDoc = await Cart.findOne({ user_id: req.user._id })
+        .populate('cart.product');
+
+    if (!cartDoc) return res.status(404).json({ message: 'Cart not found' });
+
+    const cartItems = cartDoc.cart;
+
+    // Lấy danh sách productId từ cart
+    const productIds = cartItems.map(item => item.product._id);
+    console.log(productIds);
+    // Tìm ảnh chính từ ProductImage
+    const images = await ProductImage.find({
+        prod_id: { $in: productIds },
+        is_primary_image: true
+    }).select('prod_id image');
+
+    // Gộp ảnh vào từng item
+    const cartWithImages = cartItems.map(item => {
+        const img = images.find(img => img.prod_id.toString() === item.product._id.toString());
+        return {
+        ...item.toObject(),
+        product: {
+            ...item.product.toObject(),
+            image: img?.image || null
+        }
+        };
+    });
+    // console.log(cartWithImages);
+    res.json({ cart: cartWithImages });
+    } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error getting cart' });
     }
-}
+};
 
 //thay đổi số lượng sản phẩm trong giỏ hàng
 export const changeCart = async (req, res) => {
     //Lấy userid từ token
+    // console.log(req.user._id)
     const user_id = req.user._id;
     // console.log(user_id);
     const {product_id,quantity} = req.body;

@@ -10,8 +10,10 @@ const AdminAddProduct = () => {
   const [createProduct] = useCreateProductMutation();
   const [uploadProductImage] = useCreateProductImageMutation();
   const { refetch } = useGetProductsQuery();
+  const [loading, setLoading] = useState(false);
 
   const handleAdd = async (data) => {
+    setLoading(true);
     try {
       const { images, ...productData } = data;
   
@@ -40,12 +42,14 @@ const AdminAddProduct = () => {
     } catch (error) {
       console.error("Lỗi khi thêm sản phẩm:", error);
       alert("Thêm sản phẩm thất bại. Vui lòng kiểm tra lại thông tin hoặc kết nối mạng.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="admin-add-product">
-      <AdminProductForm onSubmit={handleAdd} />
+      <AdminProductForm onSubmit={handleAdd} loading={loading} />
     </div>
   );
 };

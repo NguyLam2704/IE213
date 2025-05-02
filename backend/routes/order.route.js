@@ -1,11 +1,13 @@
 import {createOrder, fetchAllOrders, updateOrderStatus, fetchProductDetailsByOrderId, fetchOrderHistory} from '../controllers/order.controller.js'
 import express from 'express'
-import {adminMiddleware,authMiddleware} from "../middleware/auth.js";
+import {authMiddleware} from "../middleware/auth.js";
 
 
 const orderRoutes = express.Router();
+// Middleware kiểm tra
+orderRoutes.use(authMiddleware);      
 // Tạo đơn hàng
-orderRoutes.post('/',authMiddleware, createOrder)
+orderRoutes.post('/',createOrder)
 // Fetch lịch sử mua hàng
 orderRoutes.get('/order_history', fetchOrderHistory)
 // Fetch tất cả đơn hàng

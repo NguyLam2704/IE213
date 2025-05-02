@@ -11,7 +11,13 @@ export const productImageApi = createApi({
         body: formData,
       }),
     }),
+    deleteImagesByProductId: builder.mutation({
+      query: (id) => ({
+        url: `productImages/delete/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const { useCreateProductImageMutation } = productImageApi;
+export const { useCreateProductImageMutation, useDeleteImagesByProductIdMutation } = productImageApi;

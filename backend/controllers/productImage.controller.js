@@ -1,4 +1,5 @@
 import productImage from '../models/productImage.model.js';
+import mongoose from 'mongoose';
 
 export const fetchImagesByProductId = async (req, res) => {
     const productId = req.params.id;
@@ -31,3 +32,15 @@ export const uploadImage = async (req, res) => {
         res.status(500).json({ error: 'Upload failed' });
       }
 }
+
+//Xóa hết ảnh cũ 
+export const deleteImagesByProductId = async (req, res) => {
+    try {
+      const { id } = req.params;  
+      await productImage.deleteMany({ prod_id: new mongoose.Types.ObjectId(id) });
+      res.status(200).json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, message: "Failed to delete images" });
+    }
+  };
+  

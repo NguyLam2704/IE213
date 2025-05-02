@@ -10,7 +10,13 @@
     text-align: center;
   }
   
-
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    
+  }
   .ad-title {
     color: #333;
     margin-bottom: 20px;

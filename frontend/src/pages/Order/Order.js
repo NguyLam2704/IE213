@@ -3,8 +3,14 @@ import Footer from "../../components/Footer/Footer";
 
 import { useState } from "react";
 import "./Order.css";
+import { useDispatch, useSelector } from "react-redux";
+import { createOrderThunk } from "../../app/store/orderThunk";
+import Swal from "sweetalert2";
 
 export default function Cart({ isAuthenticated, setIsAuthenticated }) {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart?.cart || []);
+
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -12,73 +18,157 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
     email: '',
     note: '',
   });
-  const cart = [
-    { id: 1, name: 'LI-NING NO.1 BOOST STRING', price: 900000, quantity: 1 },
-    { id: 2, name: 'LI-NING NO.2 BOOST STRING', price: 900000, quantity: 1 },
-    { id: 3, name: 'LI-NING NO.3 BOOST STRING', price: 900000, quantity: 1 },
-    { id: 4, name: 'LI-NING NO.4 BOOST STRING', price: 900000, quantity: 1 },
-  ];
-  const discountCode = 'SALEFORYOURLIFE';
-  const discountAmount = 300000;
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const finalTotal = total - discountAmount;
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // cod | vnpay
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = () => {
-    console.log('Đặt hàng:', formData);
-    alert('Đơn hàng đã được gửi!');
-  };
-  return (
+  // const discountAmount = 300000;
+  const total = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const finalTotal = total;
 
+  const validateForm = () => {
+    const { name, address, phone, email } = formData;
+    return name && address && phone && email && cartItems.length > 0;
+  };
+
+  const handleSubmit = async () => {
+    const requiredShippingFields = ['name', 'address', 'phone', 'email'];
+    for (let field of requiredShippingFields) {
+      if (!formData[field]) {
+        Swal.fire({
+                  icon: 'failure',
+                  title: `Vui lòng nhập đầy đủ thông tin`,
+                  showConfirmButton: false,
+                  timer: 1000
+                });
+        return;
+      }
+    }
+  
+    // Check if the cart is empty
+    if (cartItems.length === 0) {
+      Swal.fire({
+        icon: 'failure',
+        title: "Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm vào giỏ.",
+        showConfirmButton: false,
+        timer: 1000
+      });
+      return;
+    }
+
+    const shipping = { ...formData };
+    const items = cartItems.map(i => ({
+      product: i.product._id,
+      quantity: i.quantity
+    }));
+
+    const orderData = {
+      shipping,
+      items,
+      paymentMethod: formData.paymentMethod
+    };
+
+
+    if (paymentMethod === 'cod') {
+      dispatch(createOrderThunk(orderData));
+    } else if (paymentMethod === 'vnpay') {
+      try {
+        const res = await fetch("http://localhost:5001/api/v1/vnpay/create_payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: finalTotal,
+            orderId: Date.now().toString(),
+          }),
+        });
+
+        const data = await res.json();
+        if (data.paymentUrl) {
+          window.location.href = data.paymentUrl;
+        } else {
+          alert("Không thể tạo thanh toán online.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Lỗi kết nối cổng thanh toán.");
+      }
+    }
+  };
+
+  return (
     <>
-      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
 
       <div className="user-container">
         <div className="user-header-container">
           <p className="user-header">TRANG CHỦ {'>'} GIỎ HÀNG</p>
         </div>
+
         <div className="order-container">
-        <div className="order-form">
-          <h3>Thông tin đặt hàng</h3>
-          <label>*Họ và tên:</label>
-          <input type="text" name="name" placeholder="Nhập họ và tên" onChange={handleChange} />
+          <div className="order-form">
+            <h3>Thông tin đặt hàng</h3>
+            {['name', 'address', 'phone', 'email', 'note'].map(field => (
+              <div key={field}>
+                <label>{field === 'note' ? 'Ghi chú' : field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                {field === 'note'
+                  ? <textarea name={field} onChange={handleChange} />
+                  : <input name={field} onChange={handleChange} />
+                }
+              </div>
+            ))}
 
-          <label>*Địa chỉ:</label>
-          <input type="text" name="address" placeholder="Nhập địa chỉ" onChange={handleChange} />
-
-          <label>*Số điện thoại:</label>
-          <input type="text" name="phone" placeholder="Nhập số điện thoại" onChange={handleChange} />
-
-          <label>*Email:</label>
-          <input type="email" name="email" placeholder="Nhập email" onChange={handleChange} />
-
-          <label>Ghi chú:</label>
-          <textarea name="note" placeholder="Ghi chú về đơn hàng" onChange={handleChange}></textarea>
-        </div>
-
-        <div className="order-summary">
-          <h3>Đơn hàng</h3>
-          {cart.map(item => (
-            <div className="order-item" key={item.id}>
-              <span>{item.name} ×{item.quantity}</span>
-              <span>{item.price.toLocaleString()} đ</span>
+            <div className="payment-method">
+              <label>Phương thức thanh toán:</label>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={paymentMethod === 'cod'}
+                    onChange={() => setPaymentMethod('cod')}
+                  />
+                  Thanh toán khi nhận hàng
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="vnpay"
+                    checked={paymentMethod === 'vnpay'}
+                    onChange={() => setPaymentMethod('vnpay')}
+                  />
+                  Thanh toán qua VNPAY
+                </label>
+              </div>
             </div>
-          ))}
-          <div className="order-total">
-            <span>Tổng đơn</span>
-            <span style={{ color: '#f2c401', fontWeight: 'bold', fontSize: '18px' }}>
-              {finalTotal.toLocaleString()} đ
-            </span>
           </div>
-          <button className="order-button" onClick={handleSubmit}>ĐẶT HÀNG</button>
+
+          <div className="order-summary">
+            <h3>Đơn hàng</h3>
+            {cartItems.map(item => (
+              <div key={item.product._id} className="order-item">
+                <span>{item.product.prod_name} ×{item.quantity}</span>
+                <span>{item.product.price.toLocaleString()} đ</span>
+              </div>
+            ))}
+            <div className="order-total">
+              <span>Tổng đơn</span>
+              <span className="total-amount">{finalTotal.toLocaleString()} đ</span>
+            </div>
+            <button
+              className="order-button"
+              onClick={handleSubmit}
+            >
+              {paymentMethod === 'cod' ? 'Đặt hàng' : 'Thanh toán online'}
+            </button>
+          </div>
         </div>
       </div>
 
-      </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

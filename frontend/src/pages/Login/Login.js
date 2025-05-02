@@ -29,7 +29,7 @@ export default function Login({ setIsAuthenticated }) {
       Swal.fire('Đăng nhập thành công!', '', 'success');
       setIsAuthenticated(true);
       dispatch(loginThunk({email,password}));
-      console.log(document.cookie); 
+      // console.log(document.cookie); 
     // Sau cùng mới điều hướng
       navigate("/");
     } catch (err) {

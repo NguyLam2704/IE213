@@ -132,7 +132,6 @@ export const logout = asyncHandler( async (req, res) => {
 //quên mật khẩu
 export const forgotPassword = asyncHandler( async (req, res) => {
     const { email } = req.body;
-    console.log("REQ BODY:", req.body);
 
     if (!email) return res.status(400).json({message: "Please provide your email"})
     

@@ -14,7 +14,7 @@ const AdminOrders = () => {
   const statuses = {
     Processing: "processing",
     Succeeded: "succeeded",
-    Cancelled: "cancelled"
+    Cancelled: "cancelled",
   };
   return (
     <div className="admin-orders">
@@ -37,9 +37,11 @@ const AdminOrders = () => {
               orders.map(order => (
                 <tr key={order._id} onClick={() => navigate(`/admin/orders/${order._id}`)}>
                   <td>{order.order_id}</td>
-                  <td>{order.total_price.toLocaleString('vi-VN')}₫</td>
+                  <td>{typeof (order.total_price ?? order.total) === 'number'
+                    ? (order.total_price ?? order.total).toLocaleString('vi-VN') + '₫'
+                    : '0₫'}</td>
                   <td>{order.orderBy?.name || "Không rõ"}</td>
-                  <td>{new Date(order.dateCreated).toLocaleDateString()}</td>
+                  <td>{new Date(order.dateCreated).toLocaleDateString() || '0'}</td>
                   <td>
                     <span className={`status-label ${statuses[order.status] || 'unknown'}`}>
                       {order.status}
