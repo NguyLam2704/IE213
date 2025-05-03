@@ -8,10 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm, clearSearchTerm } from "../../features/search/searchSlice";
 import { useGetProductsQuery } from "../../features/product/productApi";
 import { useGetCategoriesQuery } from "../../features/services/categoryApi.js";
+import { logout, selectIsAuthenticated } from "../../app/store/authSlice.js";
 
-// import logo from "../../assets/Logo2-long.png"
-
-export default function Header({ isAuthenticated, setIsAuthenticated }) {
+export default function Header() {
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const count = useSelector(state => state.cart?.cart?.length || 0);
  // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
   // const count = 0 // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
@@ -62,7 +62,9 @@ export default function Header({ isAuthenticated, setIsAuthenticated }) {
 
   // LOGOUT
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    // console.log("Logout")
+    // Xóa token và thông tin người dùng khỏi localStorage
+    dispatch(logout());
     navigate("/");
     localStorage.removeItem("isAuthenticated"); // Xóa dữ liệu đăng nhập
   };

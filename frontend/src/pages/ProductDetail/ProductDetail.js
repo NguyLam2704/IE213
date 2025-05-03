@@ -15,7 +15,7 @@ import { fetchCartThunk } from '../../app/store/cartThunks.js';
 
 
 
-export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
+export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const {data: products = []} = useGetProductsQuery();
@@ -52,7 +52,7 @@ export default function ProductDetail({ isAuthenticated, setIsAuthenticated }) {
 
   return (
     <>
-      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+      <Header/>
       <div className="container">
         <div className="breadcrumb">
           TRANG CHỦ {'>'} {product.category_id.category_name} {'>'} {product.prod_name}

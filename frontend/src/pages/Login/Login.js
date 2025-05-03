@@ -4,15 +4,14 @@ import "./Login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { apiLogin } from "../../apis/user";
+
 import Swal from "sweetalert2";
-import { setCartCount } from "../../app/store/cartSlice";
+
 import { useDispatch } from "react-redux";
-import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
-import { fetchCartThunk } from "../../app/store/cartThunks";
+
 import { loginThunk } from "../../app/store/authThunks";
 
-export default function Login({ setIsAuthenticated }) {
+export default function Login() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,10 +26,7 @@ export default function Login({ setIsAuthenticated }) {
       // //Thông báo thành công
       // console.log('Đăng nhập thành công:', response);
       Swal.fire('Đăng nhập thành công!', '', 'success');
-      setIsAuthenticated(true);
       dispatch(loginThunk({email,password}));
-      // console.log(document.cookie); 
-    // Sau cùng mới điều hướng
       navigate("/");
     } catch (err) {
       //Lỗi từ API
@@ -46,7 +42,7 @@ export default function Login({ setIsAuthenticated }) {
 
   const handleGoogleLoginSuccess = (response) => {
     console.log('Login Success:', response);
-    setIsAuthenticated(true);
+    // setIsAuthenticated(true);
     navigate("/");
   };
 
@@ -56,7 +52,7 @@ export default function Login({ setIsAuthenticated }) {
 
   return (
     <div className="container">
-    <Header setIsAuthenticated={setIsAuthenticated}/>
+    <Header/>
         <div className="login-container">
         <div className="login-box">
             <h2>Đăng Nhập</h2>

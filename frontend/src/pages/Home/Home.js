@@ -9,7 +9,7 @@ import slide1 from '../../assets/slide1.png';
 import slide2 from '../../assets/slide2.png';
 import slide3 from '../../assets/slide3.png';
 import { useGetProductsQuery } from "../../features/product/productApi.js";
-function Home({ isAuthenticated, setIsAuthenticated }){
+function Home(){
     const {data: products = [], isLoading} = useGetProductsQuery();
     const navigate = useNavigate();
     const slides = [slide1, slide2, slide3];
@@ -41,7 +41,7 @@ function Home({ isAuthenticated, setIsAuthenticated }){
 
     return(
     <>
-        <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+        <Header/>
         
         <div className="home-container">
          {/* SLIDER */}

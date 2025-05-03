@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createOrderThunk } from '../../app/store/orderThunk';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
-import { clearCart } from '../../app/store/cartSlice';
+
 export default function PaymentSuccess() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -13,26 +13,53 @@ export default function PaymentSuccess() {
         const responseCode = params.get('vnp_ResponseCode');
 
         if (responseCode === '00') {
+          const shipping = JSON.parse(localStorage.getItem('shippingInfo'));
+          const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+          console.log(cartItems," fdsa")
+          if (!shipping || cartItems.length === 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Không tìm thấy thông tin đơn hàng.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            navigate('/');
+            return;
+          }
+    
+          const items = cartItems.map(i => ({
+            product: i.product._id,
+            quantity: i.quantity
+          }));
+    
+          const orderData = {
+            shipping,
+            items,
+            paymentMethod: 'vnpay'
+          };
+    
+          dispatch(createOrderThunk(orderData));
           Swal.fire({
             icon: 'success',
-            title: 'Thanh toán thành công!',
-            text: 'Cảm ơn bạn đã thanh toán.',
-            confirmButtonText: 'OK'
+            title: 'Thanh toán thành công! Đơn hàng đã được tạo.',
+            timer: 1500,
+            showConfirmButton: false
           });
-          dispatch(clearCart());
-          // Tùy chọn: Gửi đơn hàng lên hệ thống nếu chưa lưu trước
-          // dispatch(createOrderThunk({ shipping, items, paymentMethod: 'vnpay' }));
+    
+          // Xoá thông tin sau khi hoàn tất
+          localStorage.removeItem('shippingInfo');
+          localStorage.removeItem('cartItems');
+          navigate('/');
         } else {
           Swal.fire({
             icon: 'error',
-            title: 'Thanh toán không thành công',
-            text: 'Vui lòng thử lại sau.',
-            confirmButtonText: 'OK'
+            title: 'Thanh toán thất bại hoặc bị hủy.',
+            timer: 1500,
+            showConfirmButton: false
           });
+          navigate('/cart');
         }
-
-        setTimeout(() => navigate("/"), 3000);
-    }, []);
+      }, []);
 
   return <div>Đang xử lý thanh toán...</div>;
 }

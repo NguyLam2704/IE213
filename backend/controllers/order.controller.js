@@ -9,9 +9,6 @@ export const fetchOrderHistory = async (req, res) => {
 
     try {
         const order = await Order.find(query)
-            // .populate({
-            //     path: 'order_details'
-            // })
             .populate({
                 path: 'orderBy', // Populate the 'orderBy' field
                 model: 'User',  // Specify the model to populate with (User model)
@@ -33,8 +30,6 @@ export const createOrder = async (req, res) => {
         
         // console.log("ok")
         const cartDoc = await Cart.findOne({ user_id: user_id }).populate('cart.product');
-        // console.log("ok")
-        // console.log(cartDoc," ", user_id, " ",req.user);
         if (!cartDoc || cartDoc.cart.length === 0) {
             return res.status(400).json({ success: false, message: 'Giỏ hàng trống.' });
         }

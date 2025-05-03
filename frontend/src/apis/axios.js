@@ -33,11 +33,11 @@ api.interceptors.response.use(
 
         try {
             const response = await apiRefresh();
-            const newAccessToken = response.accessToken;
+            const newAccessToken = response.newAccessToken;
 
             // Lưu lại token mới
             localStorage.setItem('authToken', newAccessToken);
-
+            localStorage.setItem("isAuthenticated", "true");
             // Gắn lại header và gọi lại request cũ
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return api(originalRequest);

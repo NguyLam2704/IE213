@@ -9,6 +9,7 @@ function sortObject(obj) {
     Object.keys(obj).sort().forEach(key => (sorted[key] = obj[key]));
     return sorted;
 };
+
 paymentRoutes.post('/create_payment', createPaymentUrl);
 paymentRoutes.get('/vnpay_return', (req, res) => {
         const query = req.query;

@@ -1,13 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchCartThunk} from './cartThunks';
 import { apiLogin } from '../../apis/user';
+import Cookies from 'js-cookie';
 
 export const loginThunk = createAsyncThunk(
     '/login',
     async (credentials, { dispatch }) => {
     const res = await apiLogin(credentials);
-    // console.log("login thunk: ",res)
-    // 1. Lưu token ngay khi có
+// Lấy giá trị cookie với tên 'refreshtoken'
+    const refreshToken = Cookies.get('refreshtoken');
+    console.log(refreshToken, " fasdf");  // In giá trị của cookie
+        // 1. Lưu token ngay khi có
     localStorage.setItem('authToken', res.token);
     localStorage.setItem("isAuthenticated", "true");
     localStorage.setItem("user_id", res.user.id); // nếu có
