@@ -64,7 +64,7 @@ export default function Cart() {
     const orderData = {
       shipping,
       items,
-      paymentMethod: formData.paymentMethod
+      paymentMethod: paymentMethod
     };
 
 
