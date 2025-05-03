@@ -15,8 +15,8 @@ const AdminAddProduct = () => {
   const handleAdd = async (data) => {
     setLoading(true);
     try {
-      const { images, ...productData } = data;
-  
+      const { images, quantity_sold, ...productData } = data;
+      productData.quantity_sold = 0;
       // B1: Gửi sản phẩm
       const res = await createProduct(productData).unwrap();
       const productId = res?.data?._id;
