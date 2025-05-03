@@ -90,9 +90,8 @@ export default function Cart() {
         const data = await res.json();
         if (data.paymentUrl) {
           localStorage.setItem("shippingInfo", JSON.stringify(formData));
-          console.log(items, "items")
           localStorage.setItem("cartItems", JSON.stringify(items));
-        
+          
           window.location.href = data.paymentUrl;
         } else {
           alert("Không thể tạo thanh toán online.");
