@@ -50,7 +50,7 @@ function Home({ isAuthenticated, setIsAuthenticated }){
 
     return(
     <>
-        <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+        <Header/>
         
         <div className="home-container">
          {/* SLIDER */}

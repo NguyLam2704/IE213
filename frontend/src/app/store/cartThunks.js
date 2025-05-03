@@ -25,10 +25,6 @@ export const fetchCartThunk = createAsyncThunk(
     async ({ product_id, quantity }, { dispatch, rejectWithValue }) => {
         try {
         const res = await apiUpdateItem({ product_id, quantity });
-        // Kiểm tra dữ liệu trả về và chắc chắn payload có thông tin cập nhật
-        // console.log('API Response:', res);
-        // Sau mỗi thao tác thành công, re-fetch cart
-         // Trả về thông tin sản phẩm được cập nhật, có thể bao gồm productId và quantity mới
         dispatch(fetchCartThunk());
 
         return {

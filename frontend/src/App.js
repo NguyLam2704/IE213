@@ -1,39 +1,26 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import pages from './routes';
 import './App.css';
-import { useEffect, useState } from "react";
-import { Provider, useDispatch } from 'react-redux';
+import { useEffect, useRef } from "react";
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './app/store/store';
-import api from './apis/axios';
 import { fetchCartThunk} from './app/store/cartThunks';
-
+import { selectIsAuthenticated } from './app/store/authSlice';
 function App() {
+    const calledRef = useRef(false);
     const dispatch = useDispatch();
-    const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isAuthenticated") === "true"
-    );
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    // setIsAuthenticated ("true");
+    // console.log(isAuthenticated)
     useEffect(() => {
-        dispatch(fetchCartThunk());
-        const checkAuth = async () => {
-            try {
-                const res = await api.post('api/v1/users/refreshtoken', {}, { withCredentials: true });
-                localStorage.setItem("authToken", res.newAccessToken);
-                localStorage.setItem("isAuthenticated", "true");
-                setIsAuthenticated(true);
-            } catch (err) {
-                setIsAuthenticated(false);
-                localStorage.setItem("isAuthenticated", "false");
-            }
-        };
-    // Kiểm tra trạng thái authToken có sẵn không
-    const token = localStorage.getItem("authToken");
-    if (token) {
-        setIsAuthenticated(true);
-    } else {
-        checkAuth();  // Gọi refresh token nếu không có authToken
-    }
-}, []);
-    
+        console.log("isAuthenticated:", isAuthenticated);
+        console.trace(); // In ra stack trace để xem tại sao bị render lại
+        if (isAuthenticated && !calledRef.current) {
+            dispatch(fetchCartThunk());
+            calledRef.current = true; // <== Thêm dòng này
+
+        }
+    }, [isAuthenticated, dispatch]); 
     
     return (
         <Provider store={store}>
@@ -44,7 +31,7 @@ function App() {
                     <Route 
                     key={index} 
                     path={path} 
-                    element={<Component isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+                    element={<Component isAuthenticated={isAuthenticated}/>}
                     >
                     {/* children  */}
                     {children && children.map(({ path: childPath, Component: ChildComponent }, childIndex) => (

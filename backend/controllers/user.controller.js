@@ -5,7 +5,7 @@ import { generateToken, generateRefreshToken } from "../middleware/jwt.js";
 import asyncHandler from 'express-async-handler';
 import sendmail from "../utils/sendmail.js";
 import { createHash } from 'crypto';
-
+import Cookies from 'js-cookie';
 
 // Đăng ký
 export const register = async (req, res) => {
@@ -83,10 +83,9 @@ export const login = async (req, res) => {
         res.cookie('refreshtoken', refreshToken, {
             httpOnly: true,
             secure: false,          // chỉ bật true khi dùng HTTPS
-            sameSite: 'lax',        // hoặc 'none' nếu frontend ở khác domain
-            maxAge: 7 * 24 * 3600 * 1000 // 7 ngày
+            sameSite: 'Lax',        // hoặc 'none' nếu frontend ở khác domain
+            maxAge:  100000 // 7 ngày
         });
-        
 
         res.status(200).json({ 
             success: true,
@@ -101,16 +100,16 @@ export const login = async (req, res) => {
 //Refresh token
 export const RefreshToken = asyncHandler(async (req, res) => {
     const cookie = req.cookies;
-    
+    // console.log(cookie, "cookie in refreshtoken")
     if (!cookie?.refreshtoken) return res.status(400).json({message: "No refresh token in cookies"})
     
     const refresh_Token = cookie.refreshtoken;
+    // console.log("User:", refresh_Token)
     jwt.verify(refresh_Token, process.env.JWT_REFRESH_SECRET,async(err, decoded) => {
         const user = await User.findOne({_id: decoded._id, refreshToken: refresh_Token})
-
         res.status(200).json({
             success: response ? true : false,
-            newAccessToken: response ? generateToken(user) : "Refresh token is not valid",
+            newAccessToken: response ? generateToken({ _id: user._id, email: user.email, role: user.role }) : "Refresh token is not valid",
         })
     })
 })

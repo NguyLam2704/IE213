@@ -10,7 +10,7 @@
   import { useGetCategoriesQuery } from "../../features/services/categoryApi.js";
   import { setSearchTerm } from "../../features/search/searchSlice.js";
 
-  const Products = ({isAuthenticated}) => {
+  const Products = () => {
     const slugify = (text) =>
       text.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-')
@@ -23,7 +23,7 @@
     const dispatch = useDispatch();
     //TÌM KIẾM
     const [searchParams] = useSearchParams();
-    const globalSearchTerm = useSelector((state) => state.search.searchTerm);
+    // const globalSearchTerm = useSelector((state) => state.search.searchTerm);
     const searchTerm = useSelector(state => state.search.searchTerm);
     useEffect(() => {
       const urlSearch = searchParams.get("search")?.toLowerCase() || "";
@@ -136,7 +136,7 @@
     ];
     return (
       <>
-      <Header isAuthenticated={isAuthenticated}/>
+      <Header/>
       {/* HEADER - FILTER */}
 
       <div className="products-header-container">

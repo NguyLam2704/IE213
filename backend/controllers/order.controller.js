@@ -9,9 +9,6 @@ export const fetchOrderHistory = async (req, res) => {
 
     try {
         const order = await Order.find(query)
-            // .populate({
-            //     path: 'order_details'
-            // })
             .populate({
                 path: 'orderBy', // Populate the 'orderBy' field
                 model: 'User',  // Specify the model to populate with (User model)

@@ -6,8 +6,10 @@ import "./Order.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrderThunk } from "../../app/store/orderThunk";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-export default function Cart({ isAuthenticated, setIsAuthenticated }) {
+export default function Cart() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.cart || []);
 
@@ -27,11 +29,6 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   // const discountAmount = 300000;
   const total = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const finalTotal = total;
-
-  const validateForm = () => {
-    const { name, address, phone, email } = formData;
-    return name && address && phone && email && cartItems.length > 0;
-  };
 
   const handleSubmit = async () => {
     const requiredShippingFields = ['name', 'address', 'phone', 'email'];
@@ -73,6 +70,13 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
 
     if (paymentMethod === 'cod') {
       dispatch(createOrderThunk(orderData));
+      Swal.fire({
+        icon: 'failure',
+        title: "Đơn hàng của bạn đã được đặt thành công.",
+        showConfirmButton: false,
+        timer: 1000
+      });
+      navigate('/');
     } else if (paymentMethod === 'vnpay') {
       try {
         const res = await fetch("http://localhost:5001/api/v1/vnpay/create_payment", {
@@ -83,9 +87,11 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
             orderId: Date.now().toString(),
           }),
         });
-
         const data = await res.json();
         if (data.paymentUrl) {
+          localStorage.setItem("shippingInfo", JSON.stringify(formData));
+          localStorage.setItem("cartItems", JSON.stringify(items));
+          
           window.location.href = data.paymentUrl;
         } else {
           alert("Không thể tạo thanh toán online.");
@@ -99,7 +105,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
 
   return (
     <>
-      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+      <Header  />
 
       <div className="user-container">
         <div className="user-header-container">

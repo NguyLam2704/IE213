@@ -9,17 +9,11 @@ const formatCurrency = (amount) => {
 };
 
 
-export default function Cart({ isAuthenticated, setIsAuthenticated }) {
+export default function Cart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // console.log(isAuthenticated)
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCartThunk());
-    }
-  }, [dispatch, isAuthenticated]);
-  
-  // const cart = useSelector(state => state.cart);
+    // const cart = useSelector(state => state.cart);
   // console.log("cart: ",cart);
   const cartItemsWithDetails = useSelector(state => state.cart?.cart || []);
 
@@ -64,7 +58,7 @@ export default function Cart({ isAuthenticated, setIsAuthenticated }) {
   return (
 
     <>
-      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+      <Header/>
 
       <div className="user-container">
         <div className="user-header-container">
