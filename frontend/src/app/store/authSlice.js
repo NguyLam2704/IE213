@@ -29,6 +29,11 @@ const authSlice = createSlice({
             state.status = 'succeeded';
             state.token  = action.payload.token;
             state.userId = action.payload.user._id;
+            state.isAuthenticated = true;
+            // lưu localStorage
+            localStorage.setItem('authToken', state.token);
+            localStorage.setItem('userId', state.userId);
+            localStorage.setItem("isAuthenticated", "true");
         })
         .addCase(loginThunk.rejected, (state, action) => {
             state.status = 'failed';
