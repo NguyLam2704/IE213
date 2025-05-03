@@ -2,7 +2,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
     fetchCartThunk,
-    fetchCartWithProductsThunk,
     changeCartItemThunk,
     removeCartItemThunk
     } from './cartThunks';

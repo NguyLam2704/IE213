@@ -9,7 +9,16 @@ import slide1 from '../../assets/slide1.png';
 import slide2 from '../../assets/slide2.png';
 import slide3 from '../../assets/slide3.png';
 import { useGetProductsQuery } from "../../features/product/productApi.js";
-function Home(){
+function Home({ isAuthenticated, setIsAuthenticated }){
+    const slugify = (str) => {
+        return str
+          .normalize('NFD')                   // tách dấu khỏi ký tự gốc
+          .replace(/[\u0300-\u036f]/g, '')    // xóa các dấu
+          .replace(/đ/g, 'd')                 // đ -> d
+          .replace(/Đ/g, 'D')
+          .replace(/\s+/g, '-')               // space -> dấu gạch ngang
+          .toLowerCase();
+      };
     const {data: products = [], isLoading} = useGetProductsQuery();
     const navigate = useNavigate();
     const slides = [slide1, slide2, slide3];

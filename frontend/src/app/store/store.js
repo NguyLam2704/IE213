@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../../features/user/userSlice'; 
-import { productApi } from '../../features/product/productApi';
+import { productApi } from '../../features/product/productApi.js';
 import { orderApi } from '../../features/order/orderApi.js';
-import {userApi} from '../../features/user/userApi.js'
+import {userApi} from '../../features/user/userApi.js';
 import { categoryApi } from '../../features/services/categoryApi.js';
 import { statisticsApi } from '../../features/statistics/statisticsApi.js';
 import searchReducer from '../../features/search/searchSlice';
@@ -15,7 +14,7 @@ export const store = configureStore({ // Khai báo store để lưu trữ state
   reducer: {
     auth: authReducer,
     order: orderReducer,
-    user: userReducer,
+    // user: user,
     [userApi.reducerPath]: userApi.reducer,
 
     [productApi.reducerPath]: productApi.reducer,
