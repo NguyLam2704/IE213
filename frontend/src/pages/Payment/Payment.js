@@ -10,7 +10,7 @@ export default function PaymentSuccess() {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const responseCode = params.get('vnp_ResponseCode');
-
+        // console.log(responseCode, "responseCode")
         if (responseCode === '00') {
           const shipping = JSON.parse(localStorage.getItem('shippingInfo'));
           const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
@@ -42,22 +42,23 @@ export default function PaymentSuccess() {
             icon: 'success',
             title: 'Thanh toán thành công! Đơn hàng đã được tạo.',
             timer: 1500,
-            showConfirmButton: false
+            showConfirmButton: true
           });
     
           // Xoá thông tin sau khi hoàn tất
           localStorage.removeItem('shippingInfo');
           localStorage.removeItem('cartItems');
           navigate('/');
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Thanh toán thất bại hoặc bị hủy.',
-            timer: 1500,
-            showConfirmButton: false
-          });
-          navigate('/cart');
-        }
+          return;
+        } 
+
+          // Swal.fire({
+          //   icon: 'error',
+          //   title: 'Thanh toán thất bại hoặc bị hủy.',
+          //   timer: 50000,
+          //   showConfirmButton: true
+          // });
+          // navigate('/cart');
       }, []);
 
   return <div>Đang xử lý thanh toán...</div>;
