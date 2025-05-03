@@ -153,6 +153,7 @@ export const createProduct = async(req,res) =>{
     }    
 }
 
+  
 // Cập nhật thông tin sản phẩm
 export const updateProduct = async(req,res) => {
     const productId = req.params.id;

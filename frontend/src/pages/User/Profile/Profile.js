@@ -1,132 +1,147 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faSave, faUser } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-// import dotenv from "dotenv";
+import { faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import "./Profile.css";
-// dotenv.config();
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProfile, updateProfileField, updateAvatar, setIsEditing } from '../../../features/user/userSlice';
-
-
-
+import { useGetProfileQuery, useUpdateUserMutation } from "../../../features/user/userApi";
 
 function Profile() {
-  const dispatch = useDispatch();
-  const profile = useSelector(state => state.user.profile);
-  const isEditing = useSelector(state => state.user.isEditing);
-  const status = useSelector(state => state.user.status);
-  const error = useSelector(state => state.user.error);
+  const { data: profile, isLoading, isError } = useGetProfileQuery();
+  const [updateUser] = useUpdateUserMutation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(null);
 
+  // Load lại form khi có dữ liệu profile
   useEffect(() => {
-    const user_id = 1;
-    dispatch(fetchProfile(user_id));
-  }, [dispatch]);
-  
+    if (profile) {
+      setFormData({
+        name: profile.name || "",
+        email: profile.email || "",
+        phone_number: profile.phone_number || "",
+        gender: profile.gender || "",
+        dob: profile.dob || "",
+        address: profile.address || "",
+        avatar: profile.avatar || "",
+        id: profile.id, 
+      });
+    }
+  }, [profile]);
+
   const handleInputChange = (e) => {
-    if (!profile) return;
     const { name, value } = e.target;
-    dispatch(updateProfileField({ name, value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      dispatch(updateAvatar(imageUrl));
+      setFormData(prev => ({ ...prev, avatar: imageUrl }));
     }
   };
-  const toggleEdit = () => {
-    dispatch(setIsEditing(!isEditing));
+
+  const handleSave = async () => {
+    try {
+      await updateUser(formData).unwrap();
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Update error", err);
+    }
   };
+
+  if (isLoading) return <p>Đang tải...</p>;
+  if (isError || !formData) return <p>Lỗi khi tải thông tin.</p>;
+
   return (
     <div className="profile-container">
-      {/* Phần thông tin */}
       <div className="profile-info">
         <h2>Thông tin tài khoản</h2>
+
         <div className="profile-field">
           <label>Họ và tên:</label>
           {isEditing ? (
-            <input type="text" name="name" value={profile.name} onChange={handleInputChange} />
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} />
           ) : (
-            <span>{profile.name}</span>
+            <span>{formData.name || ""}</span>
           )}
         </div>
+
         <div className="profile-field">
           <label>Email:</label>
-          <span>{profile.email}</span>
+          <span>{formData.email || ""}</span>
         </div>
+
         <div className="profile-field">
           <label>Số điện thoại:</label>
           {isEditing ? (
-            <input type="text" name="phone" value={profile.phone} onChange={handleInputChange} />
+            <input type="text" name="phone_number" value={formData.phone_number} onChange={handleInputChange} />
           ) : (
-            <span>{profile.phone}</span>
+            <span>{formData.phone_number || ""}</span>
           )}
         </div>
+
         <div className="profile-field">
           <label>Giới tính:</label>
           {isEditing ? (
             <div className="gender-options">
-              <label>
-                <input type="radio" name="gender" value="male" checked={profile.gender === "male"} onChange={handleInputChange} />
-                Nam
-              </label>
-              <label>
-                <input type="radio" name="gender" value="female" checked={profile.gender === "female"} onChange={handleInputChange} />
-                Nữ
-              </label>
-              <label>
-                <input type="radio" name="gender" value="other" checked={profile.gender === "other"} onChange={handleInputChange} />
-                Khác
-              </label>
+              {["male", "female", "other"].map((g) => (
+                <label key={g}>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={g}
+                    checked={formData.gender === g}
+                    onChange={handleInputChange}
+                  />
+                  {g === "male" ? "Nam" : g === "female" ? "Nữ" : "Khác"}
+                </label>
+              ))}
             </div>
           ) : (
-            <span >{profile.gender === "male" ? "Nam" : profile.gender === "female" ? "Nữ" : "Khác"}</span>
+            <span>{formData.gender === "male" ? "Nam" : formData.gender === "female" ? "Nữ" : "Khác"}</span>
           )}
         </div>
+
         <div className="profile-field">
           <label>Ngày sinh:</label>
           {isEditing ? (
-            <input type="date" name="dob" value={profile.dob} onChange={handleInputChange} />
+            <input type="date" name="dob" value={formData.dob?.slice(0, 10)} onChange={handleInputChange} />
           ) : (
-            <span>{profile.dob}</span>
+            <span>{formData.dob?.slice(0, 10) || ""}</span>
           )}
         </div>
+
         <div className="profile-field">
           <label>Địa chỉ:</label>
           {isEditing ? (
-            <input type="text" name="address" value={profile.address} onChange={handleInputChange} />
+            <input type="text" name="address" value={formData.address} onChange={handleInputChange} />
           ) : (
-            <span>{profile.address}</span>
+            <span>{formData.address || ""}</span>
           )}
         </div>
 
-        {/* Button chỉnh sửa & lưu */}
         <div className="profile-actions">
-            {isEditing ? (
-            <button className="save-btn" onClick={() => setIsEditing(false)}>
-                <FontAwesomeIcon icon={faSave} /> Lưu
+          {isEditing ? (
+            <button className="save-btn" onClick={handleSave}>
+              <FontAwesomeIcon icon={faSave} /> Lưu
             </button>
-            ) : (
+          ) : (
             <button className="edit-btn" onClick={() => setIsEditing(true)}>
-                <FontAwesomeIcon icon={faEdit} /> Chỉnh sửa
+              <FontAwesomeIcon icon={faEdit} /> Chỉnh sửa
             </button>
-            )}
+          )}
         </div>
-
       </div>
 
-      {/* Phần avatar */}
       <div className="profile-avatar">
         <div className="avatar-container">
-          <img src={profile.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq0Ew26loGLlA5Eg0toc7PicPn5JoMu6t6Nw&s"} alt="Avatar" className="avatar" />
+          <img
+            src={formData.avatar || "https://i.pinimg.com/736x/8f/1c/a2/8f1ca2029e2efceebd22fa05cca423d7.jpg"}
+            alt="Avatar"
+            className="avatar"
+          />
           {isEditing && <input type="file" accept="image/*" onChange={handleFileChange} />}
         </div>
       </div>
-      
-    
-      
     </div>
   );
 }

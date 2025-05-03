@@ -21,8 +21,8 @@ import { useGetStatisticsQuery } from '../../../features/statistics/statisticsAp
 import dayjs from 'dayjs';
 
 const AdminStatistics = () => {
-  const endDate = dayjs().format('YYYY-MM-DD');
-  const startDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
+  const endDate = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const startDate = dayjs().subtract(365, 'day').format('YYYY-MM-DD');
 
   const { data, isLoading, isError } = useGetStatisticsQuery({ startDate, endDate });
 

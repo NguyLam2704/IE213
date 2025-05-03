@@ -30,6 +30,8 @@ export const createOrder = async (req, res) => {
         
         // console.log("ok")
         const cartDoc = await Cart.findOne({ user_id: user_id }).populate('cart.product');
+        // console.log("ok")
+        // console.log(cartDoc," ", user_id, " ",req.user);
         if (!cartDoc || cartDoc.cart.length === 0) {
             return res.status(400).json({ success: false, message: 'Giỏ hàng trống.' });
         }

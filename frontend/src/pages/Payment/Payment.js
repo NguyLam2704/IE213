@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { createOrderThunk } from '../../app/store/orderThunk';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
-
 export default function PaymentSuccess() {
     const navigate = useNavigate();
     const dispatch = useDispatch();

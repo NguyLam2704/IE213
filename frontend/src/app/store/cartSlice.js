@@ -53,6 +53,7 @@ export const addToCart = createAsyncThunk(
         .addCase(fetchCartThunk.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.cart = action.payload;
+            console.log("action.payload: ",action.payload);
         })
         .addCase(fetchCartThunk.rejected, (state, action) => {
             state.status = 'failed';
