@@ -1,6 +1,7 @@
 import Cart from '../models/cart.model.js';
 import Order from '../models/order.model.js'
 import OrderDetail from '../models/order_detail.js';
+import Product from '../models/product.model.js';
 
 
 export const fetchOrderHistory = async (req, res) => {
@@ -54,7 +55,16 @@ export const createOrder = async (req, res) => {
             status: "Succeeded",
             paymentmethod: req.body.paymentMethod,
         });
-
+        
+        // giảm số lượng sản phẩm trong kho
+        for (const item of items) {
+            const product = await Product.findById(item.product);
+            if (product) {
+                product.stock -= item.quantity; // Giảm số lượng trong kho
+                product.quantity_sold += item.quantity; // Tăng số lượng đã bán
+                await product.save(); // Lưu thay đổi vào cơ sở dữ liệu
+            }
+        }
         // Xoá giỏ hàng của user
         await Cart.updateOne({ user_id }, { $set: { cart: [] } });
 
