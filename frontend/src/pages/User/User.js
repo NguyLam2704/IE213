@@ -1,4 +1,6 @@
 import Header from "../../components/Header/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../app/store/authSlice";
 import Footer from "../../components/Footer/Footer";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +9,7 @@ import { Link, Outlet, useLocation, useNavigate, Navigate } from "react-router-d
 import "./User.css";
 
 export default function User({ isAuthenticated, setIsAuthenticated }) {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false); // State hiển thị modal
@@ -20,14 +23,16 @@ export default function User({ isAuthenticated, setIsAuthenticated }) {
     { label: "Thông tin tài khoản", icon: faUser, path: "/user/profile" },
     { label: "Đơn hàng đã đặt", icon: faClipboardList, path: "/user/orders" },
     { label: "Đổi mật khẩu", icon: faLock, path: "/user/reset-password" },
-    { label: "Đăng xuất", icon: faSignOutAlt, path: "#" }, // Không điều hướng ngay
+    { label: "Đăng xuất", icon: faSignOutAlt, path: "#" }, 
   ];
 
   // Hàm xử lý đăng xuất
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    // console.log("Logout")
+    // Xóa token và thông tin người dùng khỏi localStorage
+    dispatch(logout());
     navigate("/");
-    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("isAuthenticated"); // Xóa dữ liệu đăng nhập
   };
 
   return (
