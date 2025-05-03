@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
+import { loginThunk } from '../../../app/store/authThunks';
+
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (email.trim() !== '' && password.trim() !== '') { ///không rỗng thì cho vào
-      console.log('Đăng nhập:', { email, password });
-      // Gọi API login 
-      navigate('/admin');
+    if (email.trim() !== '' && password.trim() !== '') {
+      try {
+        await dispatch(loginThunk({ email, password })).unwrap();
+        navigate('/admin');
+      } catch (error) {
+        alert('Đăng nhập thất bại: ' + error.message);
+      }
     } else {
       alert('Vui lòng nhập đầy đủ email và mật khẩu');
     }
@@ -22,7 +29,7 @@ const AdminLogin = () => {
   return (
     <div className="login-container">
       <div className="ad-auth-container">
-        <h2 className="ad-title">Đăng nhập</h2>
+        <h2 className="ad-title">Đăng nhập Quản trị viên</h2>
         <form className="ad-form" onSubmit={handleLogin}>
           <input
             type="email"

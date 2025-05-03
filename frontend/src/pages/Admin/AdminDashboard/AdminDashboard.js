@@ -11,14 +11,26 @@ import {
   faUser,
   faBars,
   faXmark,
+  faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../app/store/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
 
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("isAuthenticated");
+    navigate('/admin-login');
+  };
   return (
     <div className="ad-container">
       <header className="ad-header">
@@ -44,6 +56,9 @@ export default function AdminDashboard() {
             <NavLink to="/admin/orders" className={({ isActive }) => isActive ? 'ad-nav-item active' : 'ad-nav-item'}>
               <FontAwesomeIcon icon={faUser} /> Đơn hàng
             </NavLink>
+            <button className="ad-nav-item-logout" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
+            </button>
           </nav>
         </aside>
 
