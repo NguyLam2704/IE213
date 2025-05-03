@@ -4,6 +4,8 @@ import { useNavigate} from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
 import { changeCartItemThunk, fetchCartThunk, removeCartItemThunk } from "../../app/store/cartThunks";
+
+
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' đ';
 };
@@ -48,7 +50,7 @@ export default function Cart() {
   navigate('/order');
 };
 
-  // console.log("cartItemsWithDetails", cartItemsWithDetails);
+  console.log("cartItemsWithDetails", cartItemsWithDetails);
   const totalQuantity = cartItemsWithDetails.reduce((sum, item) => sum + item.quantity, 0);
   // const totalQuantity = 0;
   // const totalPrice = 0;

@@ -50,7 +50,9 @@ export const createOrder = async (req, res) => {
             user_id,
             items,
             shipping: { name, address, phone, email, note },
-            total
+            total,
+            status: "Succeeded",
+            paymentmethod: req.body.paymentMethod,
         });
 
         // Xoá giỏ hàng của user

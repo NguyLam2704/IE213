@@ -84,7 +84,7 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: false,          // chỉ bật true khi dùng HTTPS
             sameSite: 'Lax',        // hoặc 'none' nếu frontend ở khác domain
-            maxAge:  100000 // 7 ngày
+            maxAge:  2*60*60*10000 //2h
         });
 
         res.status(200).json({ 

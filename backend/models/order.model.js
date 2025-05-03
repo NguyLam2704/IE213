@@ -26,7 +26,8 @@ const orderSchema = new mongoose.Schema({
     },
     total:   { type: Number, required: true },
     status:  { type: String, default: 'Pending' }, // Pending, Confirmed, Shipped...
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    paymentmethod: { type: String, required: true }, // 'cod' or 'vnpay'
 });
 
 export default mongoose.model('Order', orderSchema);

@@ -23,7 +23,7 @@ paymentRoutes.get('/vnpay_return', (req, res) => {
         const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
     
         if (secureHash === signed) {
-        // ✅ Thành công
+        // Thành công
         const FE_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
             if (query.vnp_ResponseCode === '00') {
