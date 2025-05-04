@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
-import { useDispatch } from 'react-redux';
 import { loginThunk } from '../../../app/store/authThunks';
 import Swal from 'sweetalert2';
 
