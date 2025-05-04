@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import {addToCart } from '../../app/store/cartSlice.js';
 import { fetchCartThunk } from '../../app/store/cartThunks.js';
+import ReactMarkdown from 'react-markdown';
 import { selectIsAuthenticated } from "../../app/store/authSlice";
 
 
@@ -130,7 +131,7 @@ export default function ProductDetail() {
 
         <div className="section-heading">THÔNG TIN CHI TIẾT</div>
           <div className="details">
-              <p style={{ whiteSpace: 'pre-line' }}>{product.description || ''}</p>
+            <ReactMarkdown>{product.description}</ReactMarkdown>
           </div>
 
         <div className="home-section-title">Sản phẩm tương tự</div>
