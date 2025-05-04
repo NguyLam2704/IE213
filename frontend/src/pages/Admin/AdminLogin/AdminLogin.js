@@ -1,28 +1,42 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
+import { loginThunk } from '../../../app/store/authThunks';
+import Swal from 'sweetalert2';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (email.trim() !== '' && password.trim() !== '') { ///không rỗng thì cho vào
-      console.log('Đăng nhập:', { email, password });
-      // Gọi API login 
-      navigate('/admin');
-    } else {
-      alert('Vui lòng nhập đầy đủ email và mật khẩu');
-    }
+    try {
+          const result = await dispatch(loginThunk({ email, password, role: "admin" }));
+        
+          // Kiểm tra nếu login bị rejected (bị rejectWithValue)
+          if (loginThunk.rejected.match(result)) {
+            throw new Error(result.payload || "Đăng nhập thất bại");
+          }
+        
+          Swal.fire('Đăng nhập thành công!', '', 'success');
+          navigate("/admin");
+        } catch (err) {
+          console.log('Lỗi từ API:', err.message);
+          Swal.fire({
+            title: 'Lỗi đăng nhập',
+            text: err.message || 'Sai email hoặc mật khẩu!',
+            icon: 'error',
+          });
+        }
   };
 
   return (
     <div className="login-container">
       <div className="ad-auth-container">
-        <h2 className="ad-title">Đăng nhập</h2>
+        <h2 className="ad-title">Đăng nhập Quản trị viên</h2>
         <form className="ad-form" onSubmit={handleLogin}>
           <input
             type="email"

@@ -4,12 +4,12 @@ import "./Login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-
 import Swal from "sweetalert2";
-
 import { useDispatch } from "react-redux";
-
 import { loginThunk } from "../../app/store/authThunks";
+
+
+
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -22,22 +22,24 @@ export default function Login() {
   const handleLogin = async(e) => {
     e.preventDefault();
     try {
-      // const response = await apiLogin({email,password});
-      // //Thông báo thành công
-      // console.log('Đăng nhập thành công:', response);
+      const result = await dispatch(loginThunk({ email, password, role: "user" }));
+    
+      // Kiểm tra nếu login bị rejected (bị rejectWithValue)
+      if (loginThunk.rejected.match(result)) {
+        throw new Error(result.payload || "Đăng nhập thất bại");
+      }
+    
       Swal.fire('Đăng nhập thành công!', '', 'success');
-      dispatch(loginThunk({email,password}));
       navigate("/");
     } catch (err) {
-      //Lỗi từ API
-      console.log('Lỗi từ API:', err.response?.data || err.message);
-      //Hiện thông báo dễ hiểu cho người dùng
+      console.log('Lỗi từ API:', err.message);
       Swal.fire({
         title: 'Lỗi đăng nhập',
-        text: err.response?.data?.message || 'Sai email hoặc mật khẩu!',
+        text: err.message || 'Sai email hoặc mật khẩu!',
         icon: 'error',
       });
     }
+    
   };
 
   const handleGoogleLoginSuccess = (response) => {

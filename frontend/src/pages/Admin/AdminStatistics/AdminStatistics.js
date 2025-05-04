@@ -1,4 +1,4 @@
-import React from 'react';
+import {useRef,React} from 'react';
 import {
   faDollarSign,
   faBoxOpen,
@@ -65,9 +65,9 @@ const AdminStatistics = () => {
     <div className="dashboard-container">
       <h2>Thống kê</h2>
       <div className="stat-cards">
-         <StatCard title="Doanh thu" value={today.revenue} change={today.change.revenue} icon={faDollarSign} />
-         <StatCard title="Đơn hàng" value={today.orders} change={today.change.orders} icon={faCalendarAlt} />
-         <StatCard title="Sản phẩm đã bán" value={today.sold} change={today.change.sold} icon={faBoxOpen} isDown={today.change.sold < 0} />
+        <StatCard title="Doanh thu" value={today.revenue} change={today.change.revenue} icon={faDollarSign} />
+        <StatCard title="Đơn hàng" value={today.orders} change={today.change.orders} icon={faCalendarAlt} />
+        <StatCard title="Sản phẩm đã bán" value={today.sold} change={today.change.sold} icon={faBoxOpen} isDown={today.change.sold < 0} />
       </div>
 
       <h3>Thống kê doanh thu theo 365 ngày qua</h3>

@@ -48,7 +48,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading 
     prod_name: '',
     price: '',
     stock: '',
-    quantity_sold: '',
+    quantity_sold: 0,
     description: '',
     category_id: '',
     brand_id: '',
@@ -70,6 +70,7 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading 
         category_id: initialData.category_id?._id,
         brand_id: initialData.brand_id?._id,
         type_id: initialData.type_id?._id,
+        quantity_sold: Number(initialData.quantity_sold || 0),
         images: [],
       });
   
@@ -93,7 +94,19 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData); // Gửi dữ liệu ra ngoài
+    const formattedData = {
+      ...formData,
+      price: Number(formData.price),
+      stock: Number(formData.stock),
+      quantity_sold: Number(formData.quantity_sold),
+      discount: Number(formData.discount || 0),
+    };
+    if (!formData.prod_name || !formData.price || !formData.description || !formData.stock ||
+        !formData.category_id || !formData.brand_id || !formData.type_id) {
+      alert("Vui lòng điền đầy đủ thông tin bắt buộc.");
+      return;
+    }
+    onSubmit(formattedData); // Gửi dữ liệu ra ngoài
   };
   return (
     <form className="product-form" onSubmit={handleSubmit}>
@@ -110,10 +123,10 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading 
 
       <label>Số lượng đã bán</label>
       <input name="quantity_sold" type="number" value={formData.quantity_sold} onChange={handleChange} />
-
+      
       <label>Mô tả</label>
       <textarea name="description" value={formData.description} onChange={handleChange} rows="4" />
-
+      
       <label>Danh mục</label>
       <select name="category_id" value={formData.category_id} onChange={handleChange} required>
         <option value="">Chọn danh mục</option>

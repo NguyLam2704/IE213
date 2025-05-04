@@ -65,8 +65,18 @@
   text-decoration: none;
   gap: 10px;
 }
-
-.ad-nav-item:hover {
+.ad-nav-item-logout{
+  background-color: #f9f9f9;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #333;
+  text-decoration: none;
+  gap: 10px;
+}
+.ad-nav-item:hover, .ad-nav-item-logout:hover {
   background-color: #e4e4e4af;
   border-radius: 20px;
 }

@@ -19,6 +19,7 @@ import AdminStatistics from '../pages/Admin/AdminStatistics/AdminStatistics';
 import AdminProductDetail from '../pages/Admin/AdminProductDetail/AdminProductDetail';
 import AdminOrderDetail from '../pages/Admin/AdminOrderDetail/AdminOrderDetail';
 import AdminLogin from '../pages/Admin/AdminLogin/AdminLogin';
+import RequireAdminAuth from '../pages/Admin/AdminLogin/RequireAdminAuth';
 
 
 import { Navigate } from "react-router-dom";
@@ -46,7 +47,11 @@ const pages = [
     },
     {
         path: routes.admin,
-        Component: AdminDashboard,
+        Component: () => (
+            <RequireAdminAuth>
+            <AdminDashboard />
+            </RequireAdminAuth>
+        ),
         children: [
             { path: '', Component: AdminStatistics },
             { path: 'products', Component: AdminProducts },

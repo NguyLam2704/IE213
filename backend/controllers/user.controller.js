@@ -149,7 +149,7 @@ export const forgotPassword = asyncHandler( async (req, res) => {
 export const resetPassword = asyncHandler(async (req, res) => {
     const { password } = req.body;
     const { token } = req.body;
-    console.log("REQ BODY:", req.body);
+    // console.log("REQ BODY:", req.body);
     if (!password) return res.status(400).json({message: "Please provide your password"})
     
     const hashedToken = createHash("sha256").update(token).digest("hex")
@@ -231,8 +231,8 @@ export const createUsers = async (req, res) => {
 export const updateUsers = async (req,res) => {
     const user_id = req.params.id;
     const user = req.body;
-    console.log("User ID:", user_id)
-    console.log("User data:", user)
+    // console.log("User ID:", user_id)
+    // console.log("User data:", user)
     try {
         const updateUser = await User.findOneAndUpdate({_id: user_id}, user, {new: true})
 

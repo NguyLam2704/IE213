@@ -52,7 +52,6 @@ export const addToCart = createAsyncThunk(
         .addCase(fetchCartThunk.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.cart = action.payload;
-            console.log("action.payload: ",action.payload);
         })
         .addCase(fetchCartThunk.rejected, (state, action) => {
             state.status = 'failed';
@@ -68,10 +67,6 @@ export const addToCart = createAsyncThunk(
             state.status = 'succeeded';
                         // Cập nhật quantity của sản phẩm trong giỏ hàng
             const updatedProduct = action.payload; // Đảm bảo payload chứa thông tin sản phẩm được cập nhật (ví dụ: có id và quantity mới)
-            // console.log("updatedProduct: ",updatedProduct);
-
-            // console.log("state.items: ",state.items);
-            // Tìm sản phẩm trong state.items và cập nhật quantity
             const index = state.items.findIndex(item => item.product._id === updatedProduct.product._id);
             if (index !== -1) {
                 state.items[index].quantity = updatedProduct.quantity;
@@ -99,11 +94,11 @@ export const addToCart = createAsyncThunk(
             state.error = null;
         })
         .addCase(addToCart.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+            state.status = 'succeeded';
         })
         .addCase(addToCart.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+            state.status = 'failed';
+            state.error = action.payload;
         });
     }
 });
