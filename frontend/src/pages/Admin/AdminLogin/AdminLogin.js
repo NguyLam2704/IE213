@@ -13,7 +13,6 @@ const AdminLogin = () => {
     const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
-  const handleLogin = async (e) => {
     e.preventDefault();
     try {
           const result = await dispatch(loginThunk({ email, password, role: "admin" }));
