@@ -46,7 +46,10 @@
     object-fit: cover;
     border-radius: 8px;
   }
-
+  .ad-order-info-box table {
+    width: 100%;
+    border-collapse: collapse;
+  }
   
   /* Tổng tiền */
   .ad-order-info-box {
@@ -71,7 +74,14 @@
     margin-bottom: 12px;
   }
   
-  
+.ad-order-info-box th,
+.ad-order-info-box td {
+  white-space: nowrap;
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
   /* Dropdown trạng thái */
   .ad-order-status-box select {
     padding: 8px;
@@ -109,6 +119,9 @@
     background-color: #e0b832;
   }
   @media (max-width: 992px) {
+    .ad-order-info-box table {
+      table-layout: fixed;
+    }
     .ad-order-detail {
       flex-direction: column;
     }
@@ -139,6 +152,27 @@
   
     table td {
       font-size: 13px;
+    }
+    .ad-order-info-box td:nth-child(2) {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Bắt table không wrap chữ */
+    .ad-order-product-name,
+    .ad-order-product-price,
+    .ad-order-product-qty,
+    .ad-order-product-total {
+      white-space: nowrap;
+    }
+    
+    /* Ảnh sản phẩm */
+    .ad-order-product-image {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 8px;
     }
   }
   

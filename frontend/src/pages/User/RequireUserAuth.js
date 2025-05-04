@@ -1,12 +1,13 @@
+// RequireUserAuth.js
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
-import { selectIsAuthenticated } from "../../app/store/authSlice";
 
 const RequireUserAuth = ({ children }) => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || user?.role !== 'user') {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

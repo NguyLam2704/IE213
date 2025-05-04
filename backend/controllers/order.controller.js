@@ -84,7 +84,11 @@ export const fetchAllOrders = async (req, res) => {
         const orders = await Order.find({})
             .populate({
                 path: 'items.product', // Populate the 'product' field within the 'products' array
-                model: 'Product' // Specify the model to populate with (Product model)
+                model: 'Product', // Specify the model to populate with (Product model)
+                populate: {
+                    path: 'images',
+                    model: 'ProductImage'
+                }
             })
             .populate({
                 path: 'user_id',

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
 import { loginThunk } from '../../../app/store/authThunks';
-
+import Swal from 'sweetalert2';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -16,13 +16,39 @@ const AdminLogin = () => {
 
     if (email.trim() !== '' && password.trim() !== '') {
       try {
-        await dispatch(loginThunk({ email, password })).unwrap();
+        const result = await dispatch(loginThunk({ email, password })).unwrap();
+
+        if (result.user.role !== 'admin') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Không đúng role',
+            text: 'Tài khoản này không có quyền truy cập trang quản trị!',
+          });
+          return;
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng nhập thành công!',
+          text: 'Chào mừng bạn đến với trang quản trị.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
         navigate('/admin');
       } catch (error) {
-        alert('Đăng nhập thất bại: ' + error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi đăng nhập',
+          text: error || 'Sai email hoặc mật khẩu!',
+        });
       }
     } else {
-      alert('Vui lòng nhập đầy đủ email và mật khẩu');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Thiếu thông tin',
+        text: 'Vui lòng nhập đầy đủ email và mật khẩu!',
+      });
     }
   };
 
