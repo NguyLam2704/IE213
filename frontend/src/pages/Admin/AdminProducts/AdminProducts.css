@@ -1,7 +1,9 @@
 
 .admin-products {
-    padding: 20px;
-  }
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
   
   .admin-products h1 {
     font-size: 24px;
@@ -10,14 +12,15 @@
   
   .product-table {
     overflow-x: auto;
-    max-height: 500px;
+    max-height: 80vh; /* giới hạn hợp lý theo chiều cao màn hình */
+    min-height: 300px; /* để không bị "trống dưới" khi nội dung ít */
     border: 1px solid #ddd;
     border-radius: 10px;
   }
   .product-table::-webkit-scrollbar {
     display: none;
   }
-  
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -163,4 +166,3 @@ thead th {
       margin: 0 4px;
     }
   }
-  
