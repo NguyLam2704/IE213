@@ -13,7 +13,6 @@ const AdminLogin = () => {
   const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
-  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (email.trim() !== '' && password.trim() !== '') {
