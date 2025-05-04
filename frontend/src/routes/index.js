@@ -20,6 +20,7 @@ import AdminProductDetail from '../pages/Admin/AdminProductDetail/AdminProductDe
 import AdminOrderDetail from '../pages/Admin/AdminOrderDetail/AdminOrderDetail';
 import AdminLogin from '../pages/Admin/AdminLogin/AdminLogin';
 import RequireAdminAuth from '../pages/Admin/AdminLogin/RequireAdminAuth';
+import RequireUserAuth from '../pages/User/RequireUserAuth';
 
 
 import { Navigate } from "react-router-dom";
@@ -36,8 +37,12 @@ const pages = [
     { path: routes.paymentSuccess, Component: PaymentSuccess },
     { path: `${routes.products}/:category`, Component: Products },
     { 
-        path: routes.user, 
-        Component: User,
+        path: routes.user,
+        Component: () => (
+          <RequireUserAuth>
+            <User />
+          </RequireUserAuth>
+        ),
         children: [
             { path: "", Component: () => <Navigate to="/user/profile" replace /> }, 
             { path: "profile", Component: Profile },

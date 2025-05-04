@@ -71,18 +71,40 @@
     padding-top: 10px;
   }
   
-
+  .bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
   
 .summary-box {
-    margin: 60px 14px 20px auto;
-    width: 48%;
+    width: 46%;
     background-color: #ffffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 0 4px #ccc;
   }
-
-  .checkout-button {
+  .discount-box {
+    width: 46%;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 4px #ccc;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .discount-box input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  
+  .checkout-button, .discount-box button{
     background-color: #eac427;
     color: white;
     border: none;
@@ -90,6 +112,7 @@
     width: 100%;
     font-weight: bold;
     margin-top: 10px;
+    cursor: pointer;
   }
   
   /* RESPONSIVE */
@@ -113,8 +136,8 @@
     margin-top: 5px;
   }
 
-  .summary-box {
-    width: 90%;
-    margin: 30px auto 20px auto;
+  .summary-box, .discount-box {
+    width: 100%;
+    margin-bottom: 10px;
   }
 }

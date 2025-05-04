@@ -10,8 +10,7 @@ export const loginThunk = createAsyncThunk(
         // 1. Lưu token ngay khi có
     localStorage.setItem('authToken', res.token);
     localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("user_id", res.user.id); // nếu có
-    localStorage.setItem("role", res.user.role); // nếu có
+    localStorage.setItem("userId", res.user.id); //localStorage.setItem("user_id", res.user.id); // nếu có
 
     if (res.user.role === 'user'){
         dispatch(fetchCartThunk());  // ← đổ đầy luôn cả product details

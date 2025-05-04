@@ -9,10 +9,15 @@ import { setSearchTerm, clearSearchTerm } from "../../features/search/searchSlic
 import { useGetProductsQuery } from "../../features/product/productApi";
 import { useGetCategoriesQuery } from "../../features/services/categoryApi.js";
 import { logout, selectIsAuthenticated } from "../../app/store/authSlice.js";
+import { clearCart } from "../../app/store/cartSlice"; // ✅ thêm dòng này
+
 
 export default function Header() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const count = useSelector(state => state.cart?.cart?.length || 0);
+  const count = useSelector(state => 
+    isAuthenticated ? (state.cart?.cart?.length || 0) : 0
+  );
+  const [showLoginModal, setShowLoginModal] = useState(false);
  // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
   // const count = 0 // lấy số lượng sản phẩm trong giỏ hàng từ Redux store
   // console.log(count, "statr");
@@ -65,6 +70,7 @@ export default function Header() {
     // console.log("Logout")
     // Xóa token và thông tin người dùng khỏi localStorage
     dispatch(logout());
+    dispatch(clearCart());
     navigate("/");
     localStorage.removeItem("isAuthenticated"); // Xóa dữ liệu đăng nhập
   };
@@ -168,12 +174,19 @@ export default function Header() {
 
       {/* Icons */}
       <div className="header-icons">
-        <Link to="/cart" className="cart-link">
-          <FontAwesomeIcon icon={faCartShopping} className="icon" />
-          {count > 0 && (
-            <span className="cart-badge">{count}</span>
-          )}
-        </Link>
+      <button 
+        className="cart-link" 
+        onClick={() => {
+          if (isAuthenticated) {
+            navigate("/cart");
+          } else {
+            setShowLoginModal(true);
+          }
+        }}
+      >
+        <FontAwesomeIcon icon={faCartShopping} className="icon" />
+        {count > 0 && <span className="cart-badge">{count}</span>}
+      </button>
 
         {/* User Menu */}
         <div
@@ -199,7 +212,26 @@ export default function Header() {
           </div>
         )}
         </div>
+        
       </div>
+      {showLoginModal && (
+          <div className="modal-backdrop">
+          <div className="modal">
+            <h3>Bạn chưa đăng nhập</h3>
+            <p>Hãy đăng nhập để xem giỏ hàng.</p>
+            <div className="modal-buttons">
+              <button 
+                onClick={() => {
+                  setShowLoginModal(false);
+                  navigate("/login");
+                }}
+                className="modal-button-login"
+              >Đăng nhập</button>
+              <button className="modal-button-cancel" onClick={() => setShowLoginModal(false)}>Hủy</button>
+            </div>
+          </div>
+        </div>
+        )}
     </header>
   );
 }

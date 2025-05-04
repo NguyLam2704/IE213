@@ -103,5 +103,5 @@ export const addToCart = createAsyncThunk(
     }
 });
 
-export const { updateItemQuantity,clearCart  } = cartSlice.actions;
+export const { updateItemQuantity, clearCart  } = cartSlice.actions;
 export default cartSlice.reducer;
