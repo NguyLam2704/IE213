@@ -51,7 +51,7 @@ export const createPaymentUrl = (req, res) => {
   
   // Build URL: vì giá trị đã được encode, bạn vẫn dùng encode: false
   const paymentUrl = `${VNP_URL}?${qs.stringify(sorted,{ encode: false })}`;
-console.log("VNPAY Payment URL:", paymentUrl);
+// console.log("VNPAY Payment URL:", paymentUrl);
 res.json({ paymentUrl });
 
 function sortObject(obj) {

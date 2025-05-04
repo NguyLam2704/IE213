@@ -170,7 +170,7 @@ export const getCart = async (req, res) => {
 
     // Lấy danh sách productId từ cart
     const productIds = cartItems.map(item => item.product._id);
-    console.log(productIds);
+    // console.log(productIds);
     // Tìm ảnh chính từ ProductImage
     const images = await ProductImage.find({
         prod_id: { $in: productIds },

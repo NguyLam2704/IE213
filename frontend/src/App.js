@@ -13,8 +13,6 @@ function App() {
     // setIsAuthenticated ("true");
     // console.log(isAuthenticated)
     useEffect(() => {
-        console.log("isAuthenticated:", isAuthenticated);
-        console.trace(); // In ra stack trace để xem tại sao bị render lại
         if (isAuthenticated && !calledRef.current) {
             dispatch(fetchCartThunk());
             calledRef.current = true; // <== Thêm dòng này
