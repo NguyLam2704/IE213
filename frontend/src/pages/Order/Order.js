@@ -126,29 +126,31 @@ export default function Cart() {
             ))}
 
             <div className="payment-method">
-              <label>Phương thức thanh toán:</label>
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={() => setPaymentMethod('cod')}
-                  />
-                  Thanh toán khi nhận hàng
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="vnpay"
-                    checked={paymentMethod === 'vnpay'}
-                    onChange={() => setPaymentMethod('vnpay')}
-                  />
-                  Thanh toán qua VNPAY
-                </label>
-              </div>
+                <p className="payment-method-title">Phương thức thanh toán:</p>
+                <div>
+                    <div>
+                        <input
+                            type="radio"
+                            id="cod"
+                            name="paymentMethod"
+                            value="cod"
+                            checked={paymentMethod === 'cod'}
+                            onChange={() => setPaymentMethod('cod')}
+                        />
+                        <label htmlFor="cod">Thanh toán khi nhận hàng</label>
+                    </div>
+                    <div>
+                        <input
+                            type="radio"
+                            id="vnpay"
+                            name="paymentMethod"
+                            value="vnpay"
+                            checked={paymentMethod === 'vnpay'}
+                            onChange={() => setPaymentMethod('vnpay')}
+                        />
+                        <label htmlFor="vnpay">Thanh toán qua VNPAY</label>
+                    </div>
+                </div>
             </div>
           </div>
 

@@ -24,11 +24,7 @@ export const orderApi = createApi({
         }),
         invalidatesTags: ['Orders'],
     }),
-    getOrderHistory: builder.query({
-      query: (user_id) => `order/order_history?user_id=${user_id}`,
-      transformResponse: (response) => response.data,
-    }),
   })
 });
 
-export const { useGetOrdersQuery, useUpdateOrderStatusMutation, useGetOrderHistoryQuery } = orderApi;
+export const { useGetOrdersQuery, useUpdateOrderStatusMutation } = orderApi;

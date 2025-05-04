@@ -262,3 +262,24 @@ export const deleteUsers = async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 }
+
+// Cập nhật hồ sơ người dùng (tự cập nhật)
+export const updateProfile = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const updates = req.body;
+  
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        updates,
+        { new: true, runValidators: true }
+      ).select("-password");
+  
+      if (!updatedUser) return res.status(404).json({ success: false, message: "User not found" });
+  
+      res.status(200).json({ success: true, data: updatedUser });
+    } catch (e) {
+      console.error("Error updating profile:", e.message);
+      res.status(500).json({ success: false, message: "Failed to update profile" });
+    }
+  });

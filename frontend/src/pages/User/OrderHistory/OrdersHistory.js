@@ -1,11 +1,20 @@
 import React from "react";
 import "./OrdersHistory.css";
-import { useGetOrderHistoryQuery } from "../../../features/order/orderApi";
+import { useGetOrderHistoryQuery } from "../../../features/user/userApi";
+import { useSelector } from "react-redux";
 
 const OrdersHistory = () => {
-  const userId = "6802248630cc2553afa7a33d"; // lấy từ Redux
-  const { data: orders = [], isLoading, error } = useGetOrderHistoryQuery(userId);
+  const userId = useSelector((state) => state.auth.userId) || localStorage.getItem("userId");
+  const reduxId = useSelector((state) => state.auth.userId);
+  const storedId = localStorage.getItem("userId");
+  console.log("Redux userId:", reduxId);
+  console.log("LocalStorage userId:", storedId);
+  // ✅ Gọi hook ở vị trí cố định, dù userId là null
+  const { data: orders = [], isLoading, error } = useGetOrderHistoryQuery(userId, {
+    skip: !userId, // ⛔ Đừng gọi nếu không có userId
+  });
 
+  if (!userId) return <p>Không xác định được người dùng.</p>;
   if (isLoading) return <p>Đang tải dữ liệu đơn hàng...</p>;
   if (error) return <p>Đã xảy ra lỗi khi tải đơn hàng!</p>;
 
@@ -25,7 +34,7 @@ const OrdersHistory = () => {
               <span>{order.order_code || order._id}</span>
               <span>{order.status}</span>
               <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-              <span>{Number(order.total_price).toLocaleString()}đ</span>
+              <span>{Number(order.total || 0).toLocaleString()}đ</span>
             </div>
           ))
         ) : (

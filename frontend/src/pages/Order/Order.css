@@ -55,6 +55,7 @@
     width: 100%;
     padding: 12px;
     background-color: #f2c401;
+    color: white;
     border: none;
     font-weight: bold;
     cursor: pointer;
@@ -74,4 +75,78 @@
   .order-summary{
     margin-bottom: 20px;
   }
+}
+
+/* Custom radio button */
+.payment-method label {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  cursor: pointer;
+  font-weight: bold;
+  position: relative;
+  padding-left: 35px;
+  user-select: none;
+}
+
+.payment-method input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.payment-method label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  border: 2px solid #f2c401;
+  border-radius: 50%;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payment-method input[type="radio"]:checked + label::before {
+  background-color: #f2c401;
+  border: 2px solid #f2c401;
+}
+
+.payment-method label::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.payment-method input[type="radio"]:checked + label::after {
+  transform: translateY(-50%) scale(1);
+}
+
+.payment-method-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  margin-right: 10px;
+  accent-color: #eac427; 
 }

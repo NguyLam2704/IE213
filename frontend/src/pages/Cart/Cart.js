@@ -12,7 +12,13 @@ const formatCurrency = (amount) => {
 
 
 export default function Cart() {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
   const dispatch = useDispatch();
   // console.log(isAuthenticated)
     // const cart = useSelector(state => state.cart);

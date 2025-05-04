@@ -1,5 +1,5 @@
 import express from "express";
-import { getProfile,RefreshToken, fetchOneUser, fetchAllUsers, updateUsers, createUsers, deleteUsers, register, login, logout, forgotPassword, resetPassword } from "../controllers/user.controller.js";
+import { getProfile, updateProfile, RefreshToken, fetchOneUser, fetchAllUsers, updateUsers, createUsers, deleteUsers, register, login, logout, forgotPassword, resetPassword } from "../controllers/user.controller.js";
 import {adminMiddleware,authMiddleware} from "../middleware/auth.js";
 
 const userRouter = express.Router();
@@ -23,7 +23,8 @@ userRouter.post("/forgotpassword",forgotPassword);
 userRouter.put("/resetpassword", resetPassword);
 // Lấy thông tin user
 userRouter.get("/profile",authMiddleware, getProfile);
-
+// Sửa thông tin profile
+userRouter.put("/profile", authMiddleware, updateProfile); // <– mới
 
 userRouter.use(adminMiddleware);
 
