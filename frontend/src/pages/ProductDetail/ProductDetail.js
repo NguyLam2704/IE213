@@ -120,7 +120,7 @@ export default function ProductDetail() {
 
         <div className="section-heading">THÔNG TIN CHI TIẾT</div>
           <div className="details">
-              <p>{product.description || ''}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>{product.description || ''}</p>
           </div>
 
         <div className="home-section-title">Sản phẩm tương tự</div>

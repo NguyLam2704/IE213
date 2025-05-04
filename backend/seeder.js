@@ -7,6 +7,7 @@ import ProductImage from "./models/productImage.model.js";
 import Type from "./models/type.model.js";
 import Order from "./models/order.model.js"
 import OrderDetail from "./models/order_detail.js";
+import User from "./models/user.model.js"; // Import User model
 import connectDB from "./config/database.js";
 // import productData from "./data/product.js";
 import brandData from "./data/brand.js";
@@ -17,7 +18,7 @@ connectDB();
 
 const seedData = async () => {
     try {
-        // Xóa dữ liệu cũ 
+        // Xóa dữ liệu cũ
         await ProductImage.deleteMany();
         await Product.deleteMany();
         await Brand.deleteMany();
@@ -25,7 +26,7 @@ const seedData = async () => {
         await Type.deleteMany();
         await Order.deleteMany();
         await OrderDetail.deleteMany();
-        await Order.deleteMany();
+
         // Tạo dữ liệu mới
         const createBrand = await Brand.insertMany([
             { brand_id: 1, brand_name: "Yonex" },
@@ -48,7 +49,16 @@ const seedData = async () => {
         ]);
 
         const createProduct = await Product.insertMany([
-            { prod_id: 1, prod_name: "Yonex Astrox 99 Pro", price: 4500000, stock: 10, quantity_sold: 10, description: "Vợt cao cấp cho tuyển thủ chuyên nghiệp.", category_id: createCategory[0]._id, brand_id: createBrand[0]._id, type_id: createType[0]._id, discount: 10, update_at: Date.now() },
+            { prod_id: 1, prod_name: "Yonex Astrox 99 Pro", price: 4500000, stock: 10, quantity_sold: 10,
+                description: `Vợt cầu lông Yonex Astrox 99 Pro là một trong những cây vợt cao cấp nhất của Yonex, được thiết kế dành riêng cho người chơi theo phong cách tấn công mạnh mẽ và uy lực. Với hàng loạt công nghệ tiên tiến, cây vợt này mang đến hiệu suất vượt trội cho các vận động viên chuyên nghiệp và người chơi có kỹ thuật cao.
+                - Trọng lượng: 4U (80-84g).
+                - Độ cứng: Siêu cứng – hỗ trợ tối đa lực đập mạnh và kiểm soát tốt.
+                - Chu vi cán vợt: G5.
+                - Chiều dài tổng thể: 675 mm.
+                - Điểm cân bằng: Khoảng 303 mm – nặng đầu, phù hợp lối chơi tấn công.
+                - Sức căng dây: 3U (21–29 lbs), 4U (20–28 lbs).
+                Đối tượng phù hợp: Yonex Astrox 99 Pro lý tưởng cho người chơi có lực tay khỏe, kỹ thuật tốt và yêu thích lối đánh tấn công mạnh mẽ. Đặc biệt phù hợp với các vận động viên chuyên nghiệp hoặc người chơi trình độ cao đang tìm kiếm một cây vợt hỗ trợ tối đa cho những cú smash uy lực và kiểm soát cầu chính xác.`,
+                category_id: createCategory[0]._id, brand_id: createBrand[0]._id, type_id: createType[0]._id, discount: 10, update_at: Date.now() },
             { prod_id: 2, prod_name: "Lining N90 IV", price: 3900000, stock: 15, quantity_sold: 20, description: "Dòng vợt cao cấp của Lining, phù hợp cho vận động viên chuyên nghiệp.", category_id: createCategory[0]._id, brand_id: createBrand[1]._id, type_id: createType[0]._id, discount: 5, update_at: Date.now() },
             { prod_id: 3, prod_name: "Victor Thruster K 9900", price: 4200000, stock: 8, quantity_sold: 5, description: "Vợt chuyên công dành cho các tay vợt chuyên nghiệp.", category_id: createCategory[0]._id, brand_id: createBrand[2]._id, type_id: createType[0]._id, discount: 8, update_at: Date.now() },
             { prod_id: 4, prod_name: "Quấn cán Yonex AC102", price: 50000, stock: 100, quantity_sold: 30, description: "Quấn cán vợt êm ái, độ bám tốt.", category_id: createCategory[1]._id, brand_id: createBrand[0]._id, type_id: createType[1]._id, discount: 0, update_at: Date.now() },
@@ -62,7 +72,7 @@ const seedData = async () => {
             { prod_id: 12, prod_name: "Yonex Power Cushion Eclipsion Z3 Men", price: 3200000, stock: 20, quantity_sold: 4, description: "Giày cầu lông cao cấp dành cho nam với công nghệ Power Cushion tăng cường khả năng hấp thụ lực và độ bền.", category_id: createCategory[2]._id, brand_id: createBrand[0]._id, type_id: createType[0]._id, discount: 10, update_at: Date.now() },
             { prod_id: 13, prod_name: "Yonex 7526 Badminton Bag", price: 2700000, stock: 15, quantity_sold: 14, description: "Túi cầu lông Yonex 7526 tiện dụng với thiết kế thời trang, nhiều ngăn lưu trữ cho vợt và phụ kiện.", category_id: createCategory[3]._id, brand_id: createBrand[0]._id, type_id: createType[1]._id, discount: 12, update_at: Date.now() },
             { prod_id: 14, prod_name: "Yonex Astrox 66", price: 2900000, stock: 10, quantity_sold: 19, description: "Vợt cầu lông Yonex Astrox 66 với trọng lượng nhẹ và thiết kế nặng đầu, lý tưởng cho lối chơi tấn công.", category_id: createCategory[0]._id, brand_id: createBrand[0]._id, type_id: createType[2]._id, discount: 8, update_at: Date.now() }
-            
+
         ]);
 
         const createProductImage = await ProductImage.insertMany([
@@ -81,39 +91,46 @@ const seedData = async () => {
             { prod_image_id: 13, prod_id: createProduct[12]._id, image: "https://res.cloudinary.com/dgc2ww7fc/image/upload/v1744736530/Yonex7526BadmintonBag_djmonm.jpg", is_primary_image: true },
             { prod_image_id: 14, prod_id: createProduct[13]._id, image: "https://res.cloudinary.com/dgc2ww7fc/image/upload/v1744736530/YonexAstrox66_kltcre.jpg", is_primary_image: true }
         ]);
-        const createUser = {
-        "user_id": 5,
-        "name": "Nguyễn Lâm",
-        "email": "doannguyenlambt1@gmail.com",
-        "password": "$2b$10$jt4LcJvS1qoWqfwS5enWiegWIEgM0Knn0IDaboOcYToNO1fh9Bo/C",
-        "_id": "680da005a51a507c1556ce00",
-        "create_at": "2025-04-18T10:08:06.369Z",
-        "__v": 0
-        }
+
+        // Create a sample user
+        const createUser = {  // Use User.create instead of insertMany
+            name: "nguylam",
+            email: "doannguyenlambt1@gmail.com",
+            _id: "681597fb688df1cd99c88c79",
+        };
+
         // Create sample orders
         const createOrders = await Order.insertMany([
             {
-                order_id: 1,
-                products: [
-                    { product: createProduct[0]._id, count: 2, color: "red" },
-                    { product: createProduct[3]._id, count: 1, color: "blue" }
+                user_id: createUser._id,  // Use the _id of the created user
+                items: [
+                    { product: createProduct[0]._id, quantity: 2, price: createProduct[0].price },
+                    { product: createProduct[3]._id, quantity: 1, price: createProduct[3].price }
                 ],
-                total_price: 9050000, // Calculate total price based on products
-                pay_method: "Credit Card",
-                orderBy: createUser._id,
-                dateCreated: new Date(),
+                shipping: {
+                    name: "Nguyễn Văn A",
+                    address: "123 Đường ABC, Quận XYZ, TP.HCM",
+                    phone: "0901234567",
+                    email: "nguyenvana@example.com",
+                    note: "Giao hàng giờ hành chính"
+                },
+                total: 9050000, // Calculate total price based on products
                 status: "Succeeded"
             },
             {
-                order_id: 2,
-                products: [
-                    { product: createProduct[4]._id, count: 1, color: "yellow" },
-                    { product: createProduct[6]._id, count: 3, color: "green" }
+                user_id: createUser._id,
+                items: [
+                    { product: createProduct[4]._id, quantity: 1, price: createProduct[4].price },
+                    { product: createProduct[6]._id, quantity: 3, price: createProduct[6].price }
                 ],
-                total_price: 10900000, // Calculate total price based on products
-                pay_method: "COD",
-                orderBy: createUser._id,
-                dateCreated: new Date(),
+                shipping: {
+                    name: "Trần Thị B",
+                    address: "456 Đường DEF, Quận UVW, TP.HCM",
+                    phone: "0912345678",
+                    email: "tranthib@example.com",
+                    note: "Không giao giờ nghỉ trưa"
+                },
+                total: 10900000, // Calculate total price based on products
                 status: "Processing"
             }
         ]);
@@ -142,13 +159,14 @@ const seedData = async () => {
                 price: createProduct[4].price
             },
             {
-                order_detail_id: 4,
+                order_detail_id:4,
                 order_id: createOrders[1]._id,
                 prod_id: createProduct[6]._id,
                 quantity: 3,
                 price: createProduct[6].price * 3
             }
         ]);
+
         console.log("Data Imported!");
         process.exit();
     } catch (e) {
@@ -156,4 +174,5 @@ const seedData = async () => {
         process.exit(1);
     }
 }
+
 seedData();

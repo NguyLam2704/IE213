@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
 import { useDispatch } from 'react-redux';
@@ -36,7 +37,7 @@ const AdminLogin = () => {
   return (
     <div className="login-container">
       <div className="ad-auth-container">
-        <h2 className="ad-title">Đăng nhập</h2>
+        <h2 className="ad-title">Đăng nhập Quản trị viên</h2>
         <form className="ad-form" onSubmit={handleLogin}>
           <input
             type="email"

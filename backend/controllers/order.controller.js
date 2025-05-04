@@ -6,16 +6,16 @@ import Product from '../models/product.model.js';
 
 export const fetchOrderHistory = async (req, res) => {
     const userId = req.query.user_id || '';
-    const query = (userId) ? {orderBy: userId } : {};
+    const query = (userId) ? {user_id: userId } : {};
 
     try {
         const order = await Order.find(query)
             .populate({
-                path: 'orderBy', // Populate the 'orderBy' field
+                path: 'user_id', // Populate the 'orderBy' field
                 model: 'User',  // Specify the model to populate with (User model)
                 select: 'name email phone_number ' // Optionally select specific fields from the User model
             })
-            .sort({dateCreated: -1})
+            .sort({createdAt: -1})
 
         res.status(200).json({success: true, data: order})
     } catch(e) {
@@ -83,13 +83,13 @@ export const fetchAllOrders = async (req, res) => {
         const totalDocument = await Order.countDocuments();  
         const orders = await Order.find({})
             .populate({
-                path: 'products.product', // Populate the 'product' field within the 'products' array
+                path: 'items.product', // Populate the 'product' field within the 'products' array
                 model: 'Product' // Specify the model to populate with (Product model)
             })
             .populate({
-                path: 'orderBy', // Populate the 'orderBy' field
-                model: 'User',  // Specify the model to populate with (User model)
-                select: 'name email phone_number ' // Optionally select specific fields from the User model
+                path: 'user_id',
+                model: 'User',
+                select: 'name email phone_number '
             })
         res.status(200).json({
             success: true,

@@ -23,7 +23,7 @@ export const dashboardStatistics = async (req, res) => {
         const result = await Order.aggregate([
             {
                 $match: {
-                    dateCreated: {
+                    createdAt: {
                         $gte: startDateObj,
                         $lt: endDateObj
                     },
@@ -33,11 +33,11 @@ export const dashboardStatistics = async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$dateCreated" }
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
                     },
-                    totalRevenue: { $sum: "$total_price" },
+                    totalRevenue: { $sum: "$total" },
                     totalOrders: { $sum: 1 },
-                    totalSold: { $sum: { $size: "$products" } }
+                    totalSold: { $sum: { $size: "$items" } }
                 }
             },
             {
