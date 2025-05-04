@@ -7,7 +7,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../../app/store/authThunks";
-
+import { logout } from "../../app/store/authSlice";
 
 
 
@@ -26,6 +26,7 @@ export default function Login() {
   
       // Chặn nếu không phải user
       if (result.user.role !== 'user') {
+        dispatch(logout());
         Swal.fire({
           icon: 'error',
           title: 'Không đúng role',
