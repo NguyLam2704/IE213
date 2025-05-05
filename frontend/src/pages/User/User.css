@@ -1,6 +1,7 @@
 /* Tổng thể layout */
 .user-container {
     margin: 0 15px;
+    min-height: 80vh;
   }
 .user-header-container{
     display: flex;
@@ -20,7 +21,8 @@
 }
 .user-body {
     display: flex;
-    height: 100vh;
+    flex: 1;
+    /* height: 100vh; */
   }
   /* Sidebar */
   .sidebar {
@@ -64,6 +66,7 @@
   .user-content {
     flex: 1;
     padding: 20px;
+    min-height: 70vh;
   }
   
 

@@ -4,8 +4,11 @@ import Brand from '../models/brand.model.js';
 import ProductImage from '../models/productImage.model.js';
 import Type from '../models/type.model.js'
 import mongoose from 'mongoose';
+import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 const ObjectId = mongoose.Types.ObjectId;
 
+dotenv.config();
 // Lấy sản phẩm theo id 
 export const fetchProductById = async (req, res) => {
     const productId = req.params.id; // lấy từ URL parameter
@@ -129,22 +132,71 @@ export const createProduct = async(req,res) =>{
         return res.status(400).json({success: false, message: "Please fill full required information"})
     }
 
+    const exampleDescription = `Vợt cầu lông Yonex Astrox 99 Pro là một trong những cây vợt cao cấp nhất của Yonex, được thiết kế dành riêng cho người chơi theo phong cách tấn công mạnh mẽ và uy lực. Với hàng loạt công nghệ tiên tiến, cây vợt này mang đến hiệu suất vượt trội cho các vận động viên chuyên nghiệp và người chơi có kỹ thuật cao.
+                
+    📊 Thông số kỹ thuật
+    - Trọng lượng: 4U (80-84g).
+    - Độ cứng: Siêu cứng – hỗ trợ tối đa lực đập mạnh và kiểm soát tốt.
+    - Chu vi cán vợt: G5.
+    - Chiều dài tổng thể: 675 mm.
+    - Điểm cân bằng: Khoảng 303 mm – nặng đầu, phù hợp lối chơi tấn công.
+    - Sức căng dây: 3U (21–29 lbs), 4U (20–28 lbs).
+
+    🎯 Đặc điểm nổi bật
+    - Công nghệ POWER-ASSIST BUMPER: Được tích hợp ở đỉnh vợt, tăng trọng lượng đầu vợt thêm 55% so với gen thông thường, giúp tăng lực đập cầu và khả năng tấn công mạnh mẽ hơn. 
+    - Vật liệu VOLUME CUT RESIN: Một loại nhựa đột phá được áp dụng toàn bộ trên khung và trục vợt, giúp phân bổ trọng lượng đồng đều, tăng độ bền và cải thiện độ chính xác trong từng cú đánh. 
+    - Mặt vợt ISOMETRIC Plus: Thiết kế mặt vợt hình vuông mở rộng điểm ngọt (sweetspot), hỗ trợ những cú đánh chính xác ngay cả khi tiếp xúc lệch tâm. 
+    - Trục vợt Extra Slim Shaft: Trục vợt siêu mỏng giúp giảm lực cản không khí khi vung vợt, tăng tốc độ và lực đánh. 
+    - Chụp mũ vợt Energy Boost CAP PLUS: Tối đa hóa hiệu suất trục, tăng độ ổn định và hỗ trợ lực đánh. 
+    - Hệ thống Rotational Generator System: Phân bổ trọng lượng tối ưu ở đầu vợt, khớp nối chữ T và phần tay cầm, giúp vợt cân bằng và linh hoạt trong từng pha cầu. 
+
+    👤 Đối tượng phù hợp 
+    Yonex Astrox 99 Pro lý tưởng cho người chơi có lực tay khỏe, kỹ thuật tốt và yêu thích lối đánh tấn công mạnh mẽ. Đặc biệt phù hợp với các vận động viên chuyên nghiệp hoặc người chơi trình độ cao đang tìm kiếm một cây vợt hỗ trợ tối đa cho những cú smash uy lực và kiểm soát cầu chính xác.`
     const quantity_sold = 0
     const productMaxId = await Product.findOne({}).sort({prod_id: -1}) // Tìm sản phẩm có id lớn nhất
-    const newProduct = new Product({
-        prod_id: productMaxId.prod_id + 1,
-        prod_name: prod_name,
-        price: price,
-        description: description,
-        quantity_sold: quantity_sold,
-        stock: stock,
-        discount: discount || 0,
-        category_id: category_id,
-        brand_id: brand_id,
-        type_id: type_id
+    
+    let instruction = ""
+    let prompt = ""
+    if (description != "Using AI") {
+         prompt = `Formatted product descridescription in markdown format. ${description}`;
+    } 
+    else {
+        instruction = `You are an AI specializing in writing product descriptions for badminton-related products. 
+        Your task is to generate engaging, informative, and well-structured descriptions that enhance their understanding of the product.
+        The description should include the product's features, benefits, and any unique selling points.
+        Write a description without a title. Just a detailed description.
+        This is an example of product description Yonex Astrox 99 Pro: ${exampleDescription}
+        Response in Vietnamese and markdown format.
+        `;
+        prompt = `Write a product description for ${prod_name}.`;
+    }
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash"});
+    try {
+        const result = await model.generateContent({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 1500,
+            },
+            systemInstruction: instruction,
+        });
+        const response = result.response;
+        const formattedDescription = response.text();
+        const newProduct = new Product({
+            prod_id: productMaxId.prod_id + 1,
+            prod_name: prod_name,
+            price: price,
+            description: formattedDescription,
+            quantity_sold: quantity_sold,
+            stock: stock,
+            discount: discount || 0,
+            category_id: category_id,
+            brand_id: brand_id,
+            type_id: type_id
     })
     
-    try {
+    
         const product = await newProduct.save()
         return res.status(200).json({success: true, data: newProduct})
     } catch(e) {

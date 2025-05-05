@@ -2,7 +2,7 @@ import React from 'react';
 import { useGetProductsQuery } from '../../../features/product/productApi';
 import { useParams } from 'react-router-dom';
 import './AdminProductDetail.css';
-
+import ReactMarkdown from 'react-markdown';
 const AdminProductDetail = () => {
   const { id } = useParams();
   const { data: products = [], isLoading } = useGetProductsQuery();
@@ -48,7 +48,8 @@ const AdminProductDetail = () => {
           <p><strong>Loại:</strong> {type_id?.type_name}</p>
           <p><strong>Danh mục:</strong> {category_id?.category_name}</p>
           <p><strong>Thương hiệu:</strong> {brand_id?.brand_name}</p>
-          <p><strong>Mô tả:</strong> {description}</p>
+          <p><strong>Mô tả:</strong></p>
+          <ReactMarkdown>{description}</ReactMarkdown>
         </div>
       </div>
     </div>

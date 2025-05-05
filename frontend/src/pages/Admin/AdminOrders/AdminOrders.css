@@ -3,7 +3,7 @@
     border-radius: 5px;
     display: block;
     text-align: center;
-    width: 50%;
+    width: 70%;
 }
 .succeeded{
     color: rgb(35, 157, 35);
@@ -21,4 +21,10 @@
     color: rgb(54, 158, 255);
     border: 1px solid rgb(54, 158, 255);
     background-color: rgb(198, 229, 255);
+}
+
+.pending{
+    color: rgb(231, 158, 0);
+    border: 1px solid rgb(231, 158, 0);
+    background-color: rgb(252, 243, 224);
 }

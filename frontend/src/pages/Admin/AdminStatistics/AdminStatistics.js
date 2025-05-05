@@ -63,7 +63,7 @@ const AdminStatistics = () => {
 
   return (
     <div className="dashboard-container">
-      <h2>Thống kê</h2>
+      <h2>Thống kê ngày hôm nay</h2>
       <div className="stat-cards">
         <StatCard title="Doanh thu" value={today.revenue} change={today.change.revenue} icon={faDollarSign} />
         <StatCard title="Đơn hàng" value={today.orders} change={today.change.orders} icon={faCalendarAlt} />

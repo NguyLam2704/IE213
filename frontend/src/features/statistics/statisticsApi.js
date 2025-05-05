@@ -1,4 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import dayjs from 'dayjs';
+const todayStr = dayjs().format('YYYY-MM-DD');
+const yesterdayStr = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
 
 export const statisticsApi = createApi({
   reducerPath: 'statisticsApi',
@@ -10,8 +13,8 @@ export const statisticsApi = createApi({
       transformResponse: (res) => {
         const chartData = res.data;
        
-        const todayData = chartData[chartData.length - 1] || { revenue: 0, orders: 0, sold: 0 };
-        const yesterdayData = chartData[chartData.length - 2] || { revenue: 0, orders: 0, sold: 0 };
+        const todayData = chartData.find(item => item.date === todayStr) || { revenue: 0, orders: 0, sold: 0 };
+        const yesterdayData = chartData.find(item => item.date === yesterdayStr) || { revenue: 0, orders: 0, sold: 0 };
 
         const calcChange = (todayVal, yesterdayVal) => {
           if (yesterdayVal === 0) return 100;

@@ -12,6 +12,9 @@ import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import {addToCart } from '../../app/store/cartSlice.js';
 import { fetchCartThunk } from '../../app/store/cartThunks.js';
+import ReactMarkdown from 'react-markdown';
+import { selectIsAuthenticated } from "../../app/store/authSlice";
+
 
 
 
@@ -23,6 +26,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const [loading,setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const status = useSelector(state => state.cart.status);
   const dispatch = useDispatch();
   const hasHandled = useRef(false);
@@ -33,7 +37,14 @@ export default function ProductDetail() {
     setQuantity(1);
   }, [id]);
 
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
   const handleAddToCart = async (e) => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+    setLoading(true);
     try {
       await dispatch(addToCart({ product_id: product._id, quantity }))
       .unwrap()
@@ -120,7 +131,7 @@ export default function ProductDetail() {
 
         <div className="section-heading">THÔNG TIN CHI TIẾT</div>
           <div className="details">
-              <p style={{ whiteSpace: 'pre-line' }}>{product.description || ''}</p>
+            <ReactMarkdown>{product.description}</ReactMarkdown>
           </div>
 
         <div className="home-section-title">Sản phẩm tương tự</div>
@@ -138,8 +149,26 @@ export default function ProductDetail() {
         </div>
       </div>
       <Footer/>
+      {showLoginModal && (
+          <div className="modal-backdrop">
+          <div className="modal">
+            <h3>Bạn chưa đăng nhập</h3>
+            <p>Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
+            <div className="modal-buttons">
+              <button 
+                onClick={() => {
+                  setShowLoginModal(false);
+                  navigate("/login");
+                }}
+                className="modal-button-login"
+              >Đăng nhập</button>
+              <button className="modal-button-cancel" onClick={() => setShowLoginModal(false)}>Hủy</button>
+            </div>
+          </div>
+        </div>
+        )}
     </>
   );
 };
 
-// export default ProductDetail;
+

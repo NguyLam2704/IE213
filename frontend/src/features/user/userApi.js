@@ -5,7 +5,7 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_API_URL}/api/v1/`,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem('authToken');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
@@ -16,7 +16,6 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getProfile: builder.query({
       query: () => 'users/profile',
-      transformResponse: (response) => response.data,
       providesTags: ['User'],
     }),
     updateUser: builder.mutation({
@@ -27,7 +26,20 @@ export const userApi = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    updateProfile: builder.mutation({
+      query: (data) => ({
+        url: 'users/profile',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    getOrderHistory: builder.query({
+      query: (userId) => `order/order_history?user_id=${userId}`,
+      transformResponse: (response) => response.data,
+      providesTags: ['User'],
+    }),
   }),
 });
 
-export const { useGetProfileQuery, useUpdateUserMutation } = userApi;
+export const { useGetProfileQuery, useUpdateUserMutation, useUpdateProfileMutation, useGetOrderHistoryQuery  } = userApi;

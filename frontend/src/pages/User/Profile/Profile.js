@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import "./Profile.css";
-import { useGetProfileQuery, useUpdateUserMutation } from "../../../features/user/userApi";
+import { useGetProfileQuery, useUpdateProfileMutation  } from "../../../features/user/userApi";
 
 function Profile() {
   const { data: profile, isLoading, isError } = useGetProfileQuery();
-  const [updateUser] = useUpdateUserMutation();
+  const [updateProfile] = useUpdateProfileMutation ();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(null);
 
@@ -41,10 +41,13 @@ function Profile() {
 
   const handleSave = async () => {
     try {
-      await updateUser(formData).unwrap();
+      const { id, ...updateData } = formData;
+      await updateProfile(updateData).unwrap();
       setIsEditing(false);
+      alert("Cập nhật thành công!");
     } catch (err) {
       console.error("Update error", err);
+      alert("Lỗi khi cập nhật hồ sơ.");
     }
   };
 
@@ -79,45 +82,6 @@ function Profile() {
           )}
         </div>
 
-        <div className="profile-field">
-          <label>Giới tính:</label>
-          {isEditing ? (
-            <div className="gender-options">
-              {["male", "female", "other"].map((g) => (
-                <label key={g}>
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={g}
-                    checked={formData.gender === g}
-                    onChange={handleInputChange}
-                  />
-                  {g === "male" ? "Nam" : g === "female" ? "Nữ" : "Khác"}
-                </label>
-              ))}
-            </div>
-          ) : (
-            <span>{formData.gender === "male" ? "Nam" : formData.gender === "female" ? "Nữ" : "Khác"}</span>
-          )}
-        </div>
-
-        <div className="profile-field">
-          <label>Ngày sinh:</label>
-          {isEditing ? (
-            <input type="date" name="dob" value={formData.dob?.slice(0, 10)} onChange={handleInputChange} />
-          ) : (
-            <span>{formData.dob?.slice(0, 10) || ""}</span>
-          )}
-        </div>
-
-        <div className="profile-field">
-          <label>Địa chỉ:</label>
-          {isEditing ? (
-            <input type="text" name="address" value={formData.address} onChange={handleInputChange} />
-          ) : (
-            <span>{formData.address || ""}</span>
-          )}
-        </div>
 
         <div className="profile-actions">
           {isEditing ? (

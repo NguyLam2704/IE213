@@ -4,7 +4,7 @@ import { useNavigate} from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
 import { changeCartItemThunk, fetchCartThunk, removeCartItemThunk } from "../../app/store/cartThunks";
-
+import Footer from "../../components/Footer/Footer";
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' đ';
@@ -12,7 +12,13 @@ const formatCurrency = (amount) => {
 
 
 export default function Cart() {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
   const dispatch = useDispatch();
   // console.log(isAuthenticated)
     // const cart = useSelector(state => state.cart);
@@ -112,7 +118,7 @@ export default function Cart() {
       </div>
 
       </div>
-      
+      <Footer/>
     </>
   );
 }

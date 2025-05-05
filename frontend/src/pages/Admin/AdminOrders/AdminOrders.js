@@ -8,13 +8,11 @@ const AdminOrders = () => {
   const { data = {}, isLoading } = useGetOrdersQuery();
   const { orders = [] } = data;
 
-  const handleClick = (id) => {
-    navigate(`/admin/orders/${id}`);
-  };
   const statuses = {
     Processing: "processing",
     Succeeded: "succeeded",
     Cancelled: "cancelled",
+    Pending: "pending"
   };
   return (
     <div className="admin-orders">
@@ -40,8 +38,8 @@ const AdminOrders = () => {
                   <td>{typeof (order.total_price ?? order.total) === 'number'
                     ? (order.total_price ?? order.total).toLocaleString('vi-VN') + '₫'
                     : '0₫'}</td>
-                  <td>{order.orderBy?.name || "Không rõ"}</td>
-                  <td>{new Date(order.dateCreated).toLocaleDateString() || '0'}</td>
+                  <td>{order.user_id?.name || "Không rõ"}</td>
+                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td>
                     <span className={`status-label ${statuses[order.status] || 'unknown'}`}>
                       {order.status}
