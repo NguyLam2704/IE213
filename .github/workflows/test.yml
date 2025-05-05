@@ -24,5 +24,9 @@ jobs:
         working-directory: ./backend
 
       - name: Run tests
-        run: npm test
         working-directory: ./backend
+        run: npm test
+        env: 
+          NODE_ENV: test
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
