@@ -41,7 +41,7 @@ app.use(passport.session());
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:3000", // KHÔNG được dùng '*'
+    origin: FRONTEND_URL, // KHÔNG được dùng '*'
     credentials: true               // Cho phép gửi cookie
 }));
 
