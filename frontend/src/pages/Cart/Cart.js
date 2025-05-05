@@ -4,7 +4,7 @@ import { useNavigate} from "react-router-dom";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
 import { changeCartItemThunk, fetchCartThunk, removeCartItemThunk } from "../../app/store/cartThunks";
-
+import Footer from "../../components/Footer/Footer";
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' đ';
@@ -118,7 +118,7 @@ export default function Cart() {
       </div>
 
       </div>
-      
+      <Footer/>
     </>
   );
 }

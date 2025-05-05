@@ -82,16 +82,6 @@ export default function Register({ setIsAuthenticated }) {
             />
             <button type="submit" className="register-btn">Đăng Ký</button>
           </form>
-
-          <GoogleOAuthProvider clientId="345620387766-4f1bndku1jnobkb6316heea4kfe0369b.apps.googleusercontent.com">
-            <div className="App">
-              <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={handleGoogleLoginError}
-              />
-            </div>
-          </GoogleOAuthProvider>
-
           <p className="login-link">
             Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
           </p>
