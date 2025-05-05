@@ -109,7 +109,7 @@ export const fetchAllOrders = async (req, res) => {
 
 export const updateOrderStatus = async (req, res) => {
     try {
-        const orderStatus = ["Processing", "Cancelled", "Succeeded"];
+        const orderStatus = ["Processing", "Cancelled", "Succeeded", "Pending"];
         const orderId = req.body.order_id;
         const status = req.body.status;
         
