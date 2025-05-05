@@ -9,28 +9,47 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-          const result = await dispatch(loginThunk({ email, password, role: "admin" }));
-        
-          // Kiểm tra nếu login bị rejected (bị rejectWithValue)
-          if (loginThunk.rejected.match(result)) {
-            throw new Error(result.payload || "Đăng nhập thất bại");
-          }
-        
-          Swal.fire('Đăng nhập thành công!', '', 'success');
-          navigate("/admin");
-        } catch (err) {
-          console.log('Lỗi từ API:', err.message);
+
+    if (email.trim() !== '' && password.trim() !== '') {
+      try {
+        const result = await dispatch(loginThunk({ email, password })).unwrap();
+
+        if (result.user.role !== 'admin') {
           Swal.fire({
-            title: 'Lỗi đăng nhập',
-            text: err.message || 'Sai email hoặc mật khẩu!',
             icon: 'error',
+            title: 'Không đúng role',
+            text: 'Tài khoản này không có quyền truy cập trang quản trị!',
           });
+          return;
         }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng nhập thành công!',
+          text: 'Chào mừng bạn đến với trang quản trị.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        navigate('/admin');
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi đăng nhập',
+          text: error || 'Sai email hoặc mật khẩu!',
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Thiếu thông tin',
+        text: 'Vui lòng nhập đầy đủ email và mật khẩu!',
+      });
+    }
   };
 
   return (
