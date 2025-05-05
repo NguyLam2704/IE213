@@ -63,7 +63,7 @@ export default function PaymentSuccess() {
         Swal.fire({
           icon: 'error',
           title: 'Thanh toán thất bại hoặc bị hủy.',
-          timer: 1500,
+          timer: 500000,
           showConfirmButton: true
         });
         // navigate('/cart');
