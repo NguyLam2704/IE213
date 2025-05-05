@@ -24,7 +24,7 @@ paymentRoutes.get('/vnpay_return', (req, res) => {
     
         if (secureHash === signed) {
         // Thành công
-        const FE_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const FE_URL = process.env.FRONTEND_URL || 'https://smashshop.svuit.org';
 
             if (query.vnp_ResponseCode === '00') {
             return res.redirect(`${FE_URL}/payment-success?vnp_ResponseCode=00`);

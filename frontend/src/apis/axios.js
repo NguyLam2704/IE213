@@ -3,7 +3,7 @@ import { apiRefresh } from './user';
 
 // Tạo instance chung
 const api = axios.create({
-baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api/v1',
+baseURL: process.env.REACT_APP_API_URL || 'https://smashshop.svuit.org',
 timeout: 10000,            // 10s timeout
 headers: {
     'Content-Type': 'application/json',

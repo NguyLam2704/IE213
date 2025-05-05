@@ -27,7 +27,6 @@ export const store = configureStore({ // Khai báo store để lưu trữ state
   },  
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
   .concat(userApi.middleware)
-  .concat(userApi.middleware)
   .concat(productApi.middleware)
   .concat(orderApi.middleware)
   .concat(statisticsApi.middleware)
