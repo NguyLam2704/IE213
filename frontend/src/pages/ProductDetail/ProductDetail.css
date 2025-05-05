@@ -212,3 +212,46 @@
     margin-top: 10px;
   }
 }
+
+/* PRODUCT DESCRIPTION */
+.details {
+  background: #F5F5F5;
+  padding: 20px;
+  display: grid;
+  margin-bottom: 50px;
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.details h1, .details h2, .details h3 {
+  font-weight: bold;
+}
+
+.details p {
+  margin: 8px 0;
+}
+
+.details ul {
+  padding-left: 20px;
+}
+
+.details pre {
+  padding: 10px;
+  overflow-x: auto;
+  border-radius: 6px;
+  margin: 12px 0;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap; /* Quan trọng để xuống dòng! */
+  word-wrap: break-word;  /* Quan trọng để không tràn */
+}
+
+.details code {
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Arial', sans-serif;
+}

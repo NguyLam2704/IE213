@@ -80,14 +80,7 @@ export default function Login() {
                 />
                 <button type="submit" className="login-btn">Đăng Nhập</button>
             </form>
-            <GoogleOAuthProvider clientId="345620387766-4f1bndku1jnobkb6316heea4kfe0369b.apps.googleusercontent.com">
-              <div className="App">
-                <GoogleLogin
-                  onSuccess={handleGoogleLoginSuccess}
-                  onError={handleGoogleLoginError}
-                />
-              </div>
-            </GoogleOAuthProvider>
+            
             <p className="register-link">
             Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
             </p>
