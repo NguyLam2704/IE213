@@ -125,7 +125,33 @@ const AdminProductForm = ({ initialData = {}, onSubmit, isEdit = false, loading 
       <input name="quantity_sold" type="number" value={formData.quantity_sold} onChange={handleChange} />
       
       <label>Mô tả</label>
-      <textarea name="description" value={formData.description} onChange={handleChange} rows="4" />
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.5rem' }}>
+        <label>
+          <input
+            type="radio"
+            name="descMode"
+            checked={formData.description !== 'Using AI'}
+            onChange={() => setFormData(prev => ({ ...prev, description: '' }))}
+          />
+          Tự nhập
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="descMode"
+            checked={formData.description === 'Using AI'}
+            onChange={() => setFormData(prev => ({ ...prev, description: 'Using AI' }))}
+          />
+          Using AI
+        </label>
+      </div>
+
+      <textarea
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        rows="4"
+      />
       
       <label>Danh mục</label>
       <select name="category_id" value={formData.category_id} onChange={handleChange} required>

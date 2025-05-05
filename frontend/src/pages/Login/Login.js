@@ -7,7 +7,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../../app/store/authThunks";
-
+import { logout } from "../../app/store/authSlice";
 
 
 
@@ -19,16 +19,22 @@ export default function Login() {
 
 
 
-  const handleLogin = async(e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const result = await dispatch(loginThunk({ email, password, role: "user" }));
-    
-      // Kiểm tra nếu login bị rejected (bị rejectWithValue)
-      if (loginThunk.rejected.match(result)) {
-        throw new Error(result.payload || "Đăng nhập thất bại");
+      const result = await dispatch(loginThunk({ email, password })).unwrap();
+  
+      // Chặn nếu không phải user
+      if (result.user.role !== 'user') {
+        dispatch(logout());
+        Swal.fire({
+          icon: 'error',
+          title: 'Không đúng role',
+          text: 'Tài khoản này không được phép truy cập trang người dùng!',
+        });
+        return;
       }
-    
+  
       Swal.fire('Đăng nhập thành công!', '', 'success');
       navigate("/");
     } catch (err) {
@@ -39,7 +45,6 @@ export default function Login() {
         icon: 'error',
       });
     }
-    
   };
 
   const handleGoogleLoginSuccess = (response) => {

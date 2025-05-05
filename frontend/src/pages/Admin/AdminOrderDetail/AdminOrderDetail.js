@@ -9,7 +9,8 @@ const AdminOrderDetail = () => {
   const statuses = {
     Processing: "processing",
     Succeeded: "succeeded",
-    Cancelled: "cancelled"
+    Cancelled: "cancelled",
+    Pending: "pending"
   };
 
   const { id } = useParams(); 
@@ -53,19 +54,23 @@ const AdminOrderDetail = () => {
                 </tr>
               </thead>
               <tbody>
-                {order.products.map((item, idx) => (
+                {order.items.map((item, idx) => (
                   <tr key={item._id}>
                     <td>
-                      <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaIVPg8dBJJanmRBXWXPdvNnI8ZWK7PHP16w&s"
-                        alt="product"
-                        className="ad-order-product-image"
-                      />
+                    <img
+                      src={
+                        item.product?.images?.filter(img => img.is_primary_image)[0]?.image ||
+                        'https://miro.medium.com/v2/resize:fit:754/1*JSehLO-i1Q6ZoeWdFj2YEA.png'
+                      }
+                      loading="lazy"
+                      alt={item.product?.prod_name || `Sản phẩm ${idx + 1}`}
+                      className="ad-order-product-image"
+                    />
                     </td>
                     <td className="ad-order-product-name">{item.product?.prod_name || `Sản phẩm ${idx + 1}`}</td>
-                    <td className="ad-order-product-price">{item.product?.price.toLocaleString()} đ</td>
-                    <td className="ad-order-product-qty">{item.count}</td>
-                    <td className="ad-order-product-total">{(item.product?.price * item.count).toLocaleString()} đ</td>
+                    <td className="ad-order-product-price">{item.price.toLocaleString()} đ</td>
+                    <td className="ad-order-product-qty">{item.quantity}</td>
+                    <td className="ad-order-product-total">{(item.price * item.quantity).toLocaleString()} đ</td>
                   </tr>
                 ))}
               </tbody>
@@ -74,10 +79,10 @@ const AdminOrderDetail = () => {
 
           <div className="ad-order-info-box">
             <p>Tạm tính: {
-              order.products.reduce((sum, i) => sum + i.product?.price * i.count, 0).toLocaleString()
+              order.items.reduce((sum, i) => sum + i.price * i.quantity, 0).toLocaleString()
             } đ</p>
             <p>Phí vận chuyển: 0 đ</p>
-            <p><strong>Tổng cộng: {order.total_price.toLocaleString()} đ</strong></p>
+            <p><strong>Tổng cộng: {order.total.toLocaleString()} đ</strong></p>
           </div>
         </div>
 
@@ -85,14 +90,14 @@ const AdminOrderDetail = () => {
           <div className="ad-order-info-box">
             <h3>Tóm tắt</h3>
             <p>Mã đơn hàng: {order.order_id}</p>
-            <p>Ngày đặt hàng: {new Date(order.dateCreated).toLocaleDateString()}</p>
-            <p>Họ và tên: {order.orderBy?.name}</p>
-            <p>Email: {order.orderBy?.email}</p>
+            <p>Ngày đặt hàng: {new Date(order.createdAt).toLocaleDateString()}</p>
+            <p>Họ và tên: {order.user_id?.name}</p>
+            <p>Email: {order.user_id?.email}</p>
           </div>
 
           <div className="ad-order-info-box">
             <h3>Địa chỉ</h3>
-            <p>{order.location || "Chưa có địa chỉ"}</p>
+            <p>{order.shipping?.address || "Chưa có địa chỉ"}</p>
           </div>
 
           <div className="ad-order-info-box ad-order-status-box">
