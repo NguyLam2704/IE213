@@ -21,6 +21,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://smashshop.svuit.org";
+const FRONTEND_URL_VERCEL = "https://ie-213.vercel.app";
 connectDB();
 
 const app = express();
@@ -41,7 +42,7 @@ app.use(passport.session());
 
 // Middleware
 app.use(cors({
-    origin: FRONTEND_URL, // KHÔNG được dùng '*'
+    origin: [FRONTEND_URL,FRONTEND_URL_VERCEL], // KHÔNG được dùng '*'
     credentials: true               // Cho phép gửi cookie
 }));
 
