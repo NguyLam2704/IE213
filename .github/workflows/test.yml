@@ -30,3 +30,8 @@ jobs:
           NODE_ENV: test
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          VNPAY_SECRET_KEY: ${{ secrets.VNPAY_SECRET_KEY }}
+          VNPAY_TMNCODE: ${{ secrets.VNPAY_TMNCODE }}
+          VNPAY_URL: ${{ secrets.VNPAY_URL }} 
+          VNPAY_RETURN_URL: ${{ secrets.VNPAY_RETURN_URL }}
