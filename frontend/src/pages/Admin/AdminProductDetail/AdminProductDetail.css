@@ -11,7 +11,12 @@
     padding: 20px;
     background-color: #f3f3f3;
 }
-  
+  .ad-product-des{
+    background-color: white;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 20px;
+  }
   
   .product-detail-container {
     display: flex;
@@ -22,7 +27,7 @@
     align-items: flex-start;
   }
   
-  .admin-product-image {
+ .admin-product-image {
     flex: 1;
     align-items: center;
     justify-content: center;
@@ -33,7 +38,8 @@
     max-width: 100%;
     height: auto;
    
-  }
+  } 
+  
   
   .product-info {
     flex: 2;
