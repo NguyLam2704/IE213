@@ -48,9 +48,12 @@ const AdminProductDetail = () => {
           <p><strong>Loại:</strong> {type_id?.type_name}</p>
           <p><strong>Danh mục:</strong> {category_id?.category_name}</p>
           <p><strong>Thương hiệu:</strong> {brand_id?.brand_name}</p>
-          <p><strong>Mô tả:</strong></p>
-          <ReactMarkdown>{description}</ReactMarkdown>
+          
         </div>
+      </div>
+      <div className="ad-product-des details">
+        <p><strong>Mô tả:</strong></p>
+        <ReactMarkdown>{description}</ReactMarkdown>
       </div>
     </div>
   );
